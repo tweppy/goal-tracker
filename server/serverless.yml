@@ -22,12 +22,72 @@ package:
 useDotenv: true
 
 functions:
-  api:
-    handler: index.handler
+  userSignup:
+    handler: "./src/functions/userSignup/index.handler"
     events:
       - httpApi:
-          path: /
-          method: get
+          path: /api/user/signup
+          method: POST
+  userLogin:
+    handler: "./src/functions/userLogin/index.handler"
+    events:
+      - httpApi:
+          path: /api/user/login
+          method: POST
+  getGoals:
+    handler: "./src/functions/getGoals/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals
+          method: GET
+  getGoal:
+    handler: "./src/functions/getGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/{goalId}
+          method: GET
+  createGoal:
+    handler: "./src/functions/createGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/new
+          method: POST
+  editGoal:
+    handler: "./src/functions/editGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/edit/{goalId}
+          method: PATCH
+  removeGoal:
+    handler: "./src/functions/removeGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/remove/{goalId}
+          method: DELETE
+  getProgress:
+    handler: "./src/functions/getProgress/index.handler"
+    events:
+      - httpApi:
+          path: /api/progress
+          method: GET
+  getGoalProgress:
+    handler: "./src/functions/getGoalProgress/index.handler"
+    events:
+      - httpApi:
+          path: /api/progress/{completedGoalId}
+          method: GET
+  getToday:
+    handler: "./src/functions/getToday/index.handler"
+    events:
+      - httpApi:
+          path: /api/today
+          method: GET
+  updateTodayGoal:
+    handler: "./src/functions/updateTodayGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/today/{goalId}
+          method: PATCH
 
 resources:
   Resources: 
