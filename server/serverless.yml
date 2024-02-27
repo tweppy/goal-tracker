@@ -1,0 +1,126 @@
+service: aws-goal-tracker
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-north-1
+  profile: default
+  httpApi:
+    cors: true
+  iam:
+    role: ${env:LAMBDA_ROLE}
+  deploymentMethod: direct
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+
+package:
+  individually: true
+
+useDotenv: true
+
+functions:
+  userSignup:
+    handler: "./src/functions/userSignup/index.handler"
+    events:
+      - httpApi:
+          path: /api/user/signup
+          method: POST
+  userLogin:
+    handler: "./src/functions/userLogin/index.handler"
+    events:
+      - httpApi:
+          path: /api/user/login
+          method: POST
+  getGoals:
+    handler: "./src/functions/getGoals/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals
+          method: GET
+  getGoal:
+    handler: "./src/functions/getGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/{goalId}
+          method: GET
+  createGoal:
+    handler: "./src/functions/createGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/new
+          method: POST
+  editGoal:
+    handler: "./src/functions/editGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/edit/{goalId}
+          method: PATCH
+  removeGoal:
+    handler: "./src/functions/removeGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/goals/remove/{goalId}
+          method: DELETE
+  getProgress:
+    handler: "./src/functions/getProgress/index.handler"
+    events:
+      - httpApi:
+          path: /api/progress
+          method: GET
+  getGoalProgress:
+    handler: "./src/functions/getGoalProgress/index.handler"
+    events:
+      - httpApi:
+          path: /api/progress/{completedGoalId}
+          method: GET
+  getToday:
+    handler: "./src/functions/getToday/index.handler"
+    events:
+      - httpApi:
+          path: /api/today
+          method: GET
+  updateTodayGoal:
+    handler: "./src/functions/updateTodayGoal/index.handler"
+    events:
+      - httpApi:
+          path: /api/today/{goalId}
+          method: PATCH
+
+resources:
+  Resources: 
+    allUsersDb:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: allUsersDb
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+        KeySchema: 
+          - AttributeName: userId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    goalsDb:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: goalsDb
+        AttributeDefinitions:
+          - AttributeName: goalId
+            AttributeType: S
+        KeySchema: 
+          - AttributeName: goalId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+    completedGoalsDb:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: completedGoalsDb
+        AttributeDefinitions:
+          - AttributeName: completedGoalId
+            AttributeType: S
+        KeySchema: 
+          - AttributeName: completedGoalId
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
