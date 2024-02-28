@@ -1,7 +1,24 @@
+import { APIGatewayProxyResult } from "aws-lambda";
+
 export interface ResponseBody {
   success: boolean;
   message: string;
   body?: object | string;
+}
+
+export interface ValidateTokenRequest {
+  event: {
+    headers: {
+      authorization?: string;
+    };
+    body: string;
+    error?: string;
+  };
+  response: APIGatewayProxyResult;
+}
+
+export interface TokenData {
+  userId: string;
 }
 
 export interface User {
