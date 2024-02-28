@@ -1,19 +1,36 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../../services/db";
 import middy from "@middy/core";
+import httpErrorHandler from "@middy/http-error-handler";
+import { db } from "../../../services/db";
 import { sendResponse } from "../../../responses/index";
 
 const getGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    // code
+    const id = event.pathParameters?.goalId;
+
+    const result = await db
+      .get({
+        TableName: "goalsDb",
+        Key: {
+          goalId: id,
+        },
+      })
+      .promise();
+
+    console.log(result.Item);
+
+    if (!result.Item) {
+      return sendResponse(404, { success: false, message: "Goal not found" });
+    }
+
     return sendResponse(200, {
       success: true,
-      message: "msg", // edit
-      // body: { },
+      message: "Goal found",
+      body: { goal: result.Item },
     });
   } catch (error) {
-    return sendResponse(500, { success: false, message: "Internal Server Error" });
+    throw new Error("Internal Server Error");
   }
 };
 
-export const handler = middy(getGoal).handler(getGoal);
+export const handler = middy(getGoal).use(httpErrorHandler());
