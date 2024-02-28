@@ -1,12 +1,8 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from "aws-lambda";
-import { db } from "../../../services/db";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
-import { v4 } from "uuid";
-import { sendResponse } from "../../../responses/index";
-import { hashPassword } from "../../../middleware/bcrypt";
-import { checkUsername } from "../../../middleware/user";
-import { User } from "../../../interfaces/index";
 import httpErrorHandler from "@middy/http-error-handler";
+import { sendResponse } from "../../../responses/index";
+import { addNewUser, checkUsername } from "../../../middleware/user";
 
 const userSignup = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -26,26 +22,12 @@ const userSignup = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
       return sendResponse(400, { success: false, message: "Username already exists" });
     }
 
-    const hashedPwd = await hashPassword(password);
-
-    const newUser: User = {
-      userId: v4(),
-      username: username,
-      email: email,
-      password: hashedPwd,
-    };
-
-    await db
-      .put({
-        TableName: "allUsersDb",
-        Item: newUser,
-      })
-      .promise();
+    const newUser = await addNewUser(username, email, password);
 
     return sendResponse(201, {
       success: true,
       message: "User signed up successfully",
-      body: { username: username, userId: newUser.userId },
+      body: { username: newUser.username, userId: newUser.userId },
     });
   } catch (error) {
     throw new Error("Internal Server Error");
