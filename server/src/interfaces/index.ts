@@ -32,7 +32,7 @@ export interface Goal {
   goalId: string;
   userId: string;
   goalName: string;
-  description: string;
+  description?: string;
   dueDate?: string | null;
   repeatType: "daily" | "weekly" | "weekdays" | "weekends" | "none";
 }
