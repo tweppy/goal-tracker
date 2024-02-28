@@ -5,15 +5,15 @@ export interface ResponseBody {
 }
 
 export interface User {
-  userID: string;
+  userId: string;
   username: string;
   email: string;
   password: string;
 }
 
 export interface Goal {
-  goalID: string;
-  userID: string;
+  goalId: string;
+  userId: string;
   goalName: string;
   description: string;
   dueDate?: string | null;
@@ -21,8 +21,8 @@ export interface Goal {
 }
 
 export interface CompletedGoal {
-  completedGoalID: string;
-  goalID: string;
-  userID: string;
+  completedGoalId: string;
+  goalId: string;
+  userId: string;
   completionDate: string;
 }
