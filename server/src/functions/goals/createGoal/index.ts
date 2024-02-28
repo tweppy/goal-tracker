@@ -1,19 +1,44 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../../services/db";
 import middy from "@middy/core";
+import httpErrorHandler from "@middy/http-error-handler";
 import { sendResponse } from "../../../responses/index";
+import { db } from "../../../services/db";
+import { Goal } from "../../../interfaces/index";
+import { v4 } from "uuid";
+import { validateToken } from "../../../middleware/auth";
 
 const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    // code
+    if (!event.body) {
+      return sendResponse(400, { success: false, message: "Request body is missing" });
+    }
+
+    const { userId, goalName, description, dueDate, repeatType } = JSON.parse(event.body);
+
+    const newGoal: Goal = {
+      goalId: v4(),
+      userId,
+      goalName,
+      description,
+      dueDate,
+      repeatType,
+    };
+
+    await db
+      .put({
+        TableName: "goalsDb",
+        Item: newGoal,
+      })
+      .promise();
+
     return sendResponse(200, {
       success: true,
-      message: "msg", // edit
-      // body: { },
+      message: "Goal created successfully",
+      body: { newGoal },
     });
   } catch (error) {
-    return sendResponse(500, { success: false, message: "Internal Server Error" });
+    throw new Error("Internal Server Error");
   }
 };
 
-export const handler = middy(createGoal).handler(createGoal);
+export const handler = middy(createGoal).use(httpErrorHandler()).use(validateToken);
