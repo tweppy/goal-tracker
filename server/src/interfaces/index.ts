@@ -8,6 +8,9 @@ export interface ResponseBody {
 
 export interface ValidateTokenRequest {
   event: {
+    queryStringParameters: {
+      [key: string]: string;
+    };
     headers: {
       authorization?: string;
     };
