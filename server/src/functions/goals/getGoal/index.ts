@@ -4,20 +4,18 @@ import httpErrorHandler from "@middy/http-error-handler";
 import { db } from "../../../services/db";
 import { sendResponse } from "../../../responses/index";
 import { validateTokenParam } from "../../../middleware/auth";
+import { findGoalByGoalId } from "../../../middleware/goal";
 
 const getGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    const goalId = event.pathParameters?.goalId;
-    const userId = event.queryStringParameters?.userId;
+    if (!event.pathParameters?.goalId || !event.queryStringParameters?.userId) {
+      return sendResponse(400, { success: false, message: "Missing valid path parameter or query string parameter" });
+    }
 
-    const params = {
-      TableName: "goalsDb",
-      Key: {
-        goalId: goalId,
-      },
-    };
+    const goalId = event.pathParameters.goalId;
+    const userId = event.queryStringParameters.userId;
 
-    const result = await db.get(params).promise();
+    const result = await findGoalByGoalId(goalId);
 
     if (!result.Item) {
       return sendResponse(404, { success: false, message: "Goal not found" });
