@@ -10,18 +10,14 @@ import { validateToken } from "../../../middleware/auth";
 const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     if (!event.body) {
-      return sendResponse(400, { success: false, message: "Request body is missing" });
+      return sendResponse(400, { success: false, message: "Missing request body" });
     }
 
-    const { userId, goalName, description, dueDate, repeatType } = JSON.parse(event.body);
+    const reqBody = JSON.parse(event.body);
 
     const newGoal: Goal = {
       goalId: v4(),
-      userId,
-      goalName,
-      description,
-      dueDate,
-      repeatType,
+      ...reqBody
     };
 
     await db
