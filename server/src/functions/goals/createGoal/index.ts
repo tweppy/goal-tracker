@@ -13,7 +13,7 @@ const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
       return sendResponse(400, { success: false, message: "Request body is missing" });
     }
 
-    const { userId, goalName, description, dueDate, repeatType } = JSON.parse(event.body);
+    const { userId, goalName, description, dueDate, repeatType, repeatDay } = JSON.parse(event.body);
 
     const newGoal: Goal = {
       goalId: v4(),
