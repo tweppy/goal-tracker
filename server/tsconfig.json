@@ -7,13 +7,14 @@
     "lib": ["ES2022"],
     "strict": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "preserveConstEnums": true,
     "resolveJsonModule": true,
     "outDir": "lib",
     "moduleResolution": "node",
-    "rootDir": ".",
+    "rootDir": "."
   },
   "include": ["./src/**/*.ts", "src/.d.ts"],
   "exclude": ["node_modules"]

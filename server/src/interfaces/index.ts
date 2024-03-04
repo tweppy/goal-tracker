@@ -38,7 +38,7 @@ export interface Goal {
   description?: string;
   dueDate?: string | null;
   repeatType: "daily" | "weekly" | "weekdays" | "weekends" | "none";
-  repeatDay?: number;
+  repeatDay?: number[];
 }
 
 export interface CompletedGoal {
