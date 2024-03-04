@@ -12,3 +12,5 @@ export const findGoalByGoalId = async (goalId: string) => {
 
   return result;
 };
+
+export const isGoalCompletedToday = async (goalId: string, date: string) => {};

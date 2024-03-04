@@ -18,8 +18,23 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
     const reqBody = JSON.parse(event.body);
     const todayDate = dayjs().format("YYYY-MM-DD");
 
+    const params = {
+      TableName: "completedGoalsDb",
+      KeyConditionExpression: "goalId = :goalId",
+      FilterExpression: "completionDate = :completionDate",
+      ExpressionAttributeValues: {
+        ":goalId": goalId,
+        ":completionDate": todayDate,
+      },
+    };
+
+    const result = await db.query(params).promise();
+
+    if (result.Items && result.Items.length > 0) {
+      return sendResponse(404, { success: false, message: "Goal already marked as complete", body: { item: result.Items } });
+    }
+
     const newCompletedGoal: CompletedGoal = {
-      completedGoalId: v4(),
       goalId,
       userId: reqBody.userId,
       completionDate: todayDate,
