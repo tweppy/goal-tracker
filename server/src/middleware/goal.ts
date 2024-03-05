@@ -2,7 +2,7 @@ import { db } from "../services/db";
 
 export const findGoalByGoalId = async (goalId: string) => {
   const params = {
-    TableName: "goalsDb",
+    TableName: "goalsDb01",
     Key: {
       goalId: goalId,
     },
@@ -12,3 +12,5 @@ export const findGoalByGoalId = async (goalId: string) => {
 
   return result;
 };
+
+export const isGoalCompletedToday = async (goalId: string, date: string) => {};

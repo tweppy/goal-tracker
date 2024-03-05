@@ -42,7 +42,7 @@ export interface Goal {
 }
 
 export interface CompletedGoal {
-  completedGoalId: string;
+  // completedGoalId: string;
   goalId: string;
   userId: string;
   completionDate: string;
