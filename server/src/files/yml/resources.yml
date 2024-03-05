@@ -1,0 +1,38 @@
+Resources:
+  usersDb01:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: usersDb01
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  goalsDb01:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: goalsDb01
+      AttributeDefinitions:
+        - AttributeName: goalId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: goalId
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  completedGoalsDb01:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: completedGoalsDb01
+      AttributeDefinitions:
+        - AttributeName: goalId
+          AttributeType: S
+        - AttributeName: completionDate
+          AttributeType: S
+      KeySchema:
+        - AttributeName: goalId
+          KeyType: HASH
+        - AttributeName: completionDate
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST

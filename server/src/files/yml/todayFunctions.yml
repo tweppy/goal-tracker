@@ -1,0 +1,12 @@
+getToday:
+  handler: "./src/functions/getToday/index.handler"
+  events:
+    - httpApi:
+        path: /api/today
+        method: GET
+addCompletedGoal:
+  handler: "./src/functions/addCompletedGoal/index.handler"
+  events:
+    - httpApi:
+        path: /api/today/{goalId}
+        method: POST

@@ -1,130 +1,23 @@
-service: aws-goal-tracker-3
-frameworkVersion: "3"
+service: aws-goal-tracker-00
+frameworkVersion: '3'
 
-provider:
-  name: aws
-  runtime: nodejs18.x
-  region: eu-north-1
-  profile: default
-  httpApi:
-    cors: true
-  iam:
-    role: ${env:LAMBDA_ROLE}
-  deploymentMethod: direct
+provider: ${file(src/files/yml/provider.yml)}
 
-plugins:
-  - serverless-webpack
+useDotenv: true
 
 package:
   individually: true
 
-useDotenv: true
+plugins:
+  - serverless-esbuild
+
+custom: ${file(src/files/yml/esbuild.yml)}
 
 functions:
-  userSignup:
-    handler: "./src/functions/user/userSignup/index.handler"
-    events:
-      - httpApi:
-          path: /api/user/signup
-          method: POST
-  userLogin:
-    handler: "./src/functions/user/userLogin/index.handler"
-    events:
-      - httpApi:
-          path: /api/user/login
-          method: POST
-  getGoals:
-    handler: "./src/functions/goals/getGoals/index.handler"
-    events:
-      - httpApi:
-          path: /api/goals
-          method: GET
-  getGoal:
-    handler: "./src/functions/goals/getGoal/index.handler"
-    events:
-      - httpApi:
-          path: /api/goals/{goalId}
-          method: GET
-  createGoal:
-    handler: "./src/functions/goals/createGoal/index.handler"
-    events:
-      - httpApi:
-          path: /api/goals/new
-          method: POST
-  editGoal:
-    handler: "./src/functions/goals/editGoal/index.handler"
-    events:
-      - httpApi:
-          path: /api/goals/edit/{goalId}
-          method: PATCH
-  removeGoal:
-    handler: "./src/functions/goals/removeGoal/index.handler"
-    events:
-      - httpApi:
-          path: /api/goals/remove/{goalId}
-          method: DELETE
-  getProgress:
-    handler: "./src/functions/progress/getProgress/index.handler"
-    events:
-      - httpApi:
-          path: /api/progress
-          method: GET
-  getGoalProgress:
-    handler: "./src/functions/progress/getGoalProgress/index.handler"
-    events:
-      - httpApi:
-          path: /api/progress/{goalId}
-          method: GET
-  getToday:
-    handler: "./src/functions/today/getToday/index.handler"
-    events:
-      - httpApi:
-          path: /api/today
-          method: GET
-  addCompletedGoal:
-    handler: "./src/functions/today/addCompletedGoal/index.handler"
-    events:
-      - httpApi:
-          path: /api/today/{goalId}
-          method: POST
+  - ${file(src/files/yml/goalFunctions.yml)}
+  - ${file(src/files/yml/progressFunctions.yml)}
+  - ${file(src/files/yml/todayFunctions.yml)}
+  - ${file(src/files/yml/userFunctions.yml)}
 
 resources:
-  Resources:
-    userAccountsDb:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: userAccountsDb
-        AttributeDefinitions:
-          - AttributeName: userId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: userId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-    userGoalsDb:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: userGoalsDb
-        AttributeDefinitions:
-          - AttributeName: goalId
-            AttributeType: S
-        KeySchema:
-          - AttributeName: goalId
-            KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-    userCompletedGoalsDb:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: userCompletedGoalsDb
-        AttributeDefinitions:
-          - AttributeName: goalId
-            AttributeType: S
-          - AttributeName: completionDate
-            AttributeType: S
-        KeySchema:
-          - AttributeName: goalId
-            KeyType: HASH
-          - AttributeName: completionDate
-            KeyType: RANGE
-        BillingMode: PAY_PER_REQUEST
-
+  - ${file(src/files/yml/resources.yml)}

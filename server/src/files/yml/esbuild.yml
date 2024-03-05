@@ -1,0 +1,10 @@
+esbuild:
+  {
+    bundle: true,
+    minify: false,
+    exclude: [],
+    target: "node18",
+    define: { "require.resolve": undefined },
+    platform: "node",
+    concurrency: 10,
+  }
