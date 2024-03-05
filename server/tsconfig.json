@@ -1,21 +1,21 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
-    "allowJs": true,
-    "target": "ES2022",
-    "module": "CommonJS",
     "lib": ["ES2022"],
+    "module": "CommonJS",
+    "target": "ES2022",
     "strict": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "preserveConstEnums": true,
-    "resolveJsonModule": true,
-    "outDir": "lib",
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
-    "rootDir": "."
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "removeComments": true,
+    "outDir": ".build",
+    "baseUrl": "."
   },
   "include": ["./src/**/*.ts", "src/.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules/**/*"]
 }
