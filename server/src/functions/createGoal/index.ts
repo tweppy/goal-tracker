@@ -1,11 +1,11 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import httpErrorHandler from "@middy/http-error-handler";
-import { sendResponse } from "../../../responses/index";
-import { db } from "../../../services/db";
-import { Goal } from "../../../interfaces/index";
+import { sendResponse } from "../../responses/index";
+import { db } from "../../services/db";
+import { Goal } from "../../interfaces/index";
 import { v4 } from "uuid";
-import { validateToken } from "../../../middleware/auth";
+import { validateToken } from "../../middleware/auth";
 
 const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -22,7 +22,7 @@ const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
 
     await db
       .put({
-        TableName: "goalsDb",
+        TableName: "goalsDb01",
         Item: newGoal,
       })
       .promise();
@@ -33,6 +33,7 @@ const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
       body: { newGoal },
     });
   } catch (error) {
+    console.log(error);
     throw new Error("Internal Server Error");
   }
 };

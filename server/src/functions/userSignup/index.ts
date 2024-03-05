@@ -1,8 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import httpErrorHandler from "@middy/http-error-handler";
-import { sendResponse } from "../../../responses/index";
-import { addNewUser, checkUsername } from "../../../middleware/user";
+import { sendResponse } from "../../responses/index";
+import { addNewUser, checkUsername } from "../../middleware/user";
 
 const userSignup = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -30,6 +30,7 @@ const userSignup = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
       body: { username: newUser.username, userId: newUser.userId },
     });
   } catch (error) {
+    console.log(error);
     throw new Error("Internal Server Error");
   }
 };

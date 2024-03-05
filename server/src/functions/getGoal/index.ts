@@ -1,10 +1,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import httpErrorHandler from "@middy/http-error-handler";
-import { db } from "../../../services/db";
-import { sendResponse } from "../../../responses/index";
-import { validateTokenParam } from "../../../middleware/auth";
-import { findGoalByGoalId } from "../../../middleware/goal";
+import { sendResponse } from "../../responses/index";
+import { validateTokenParam } from "../../middleware/auth";
+import { findGoalByGoalId } from "../../middleware/goal";
 
 const getGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {

@@ -7,5 +7,5 @@ jspm_packages
 
 # Other
 .env
-.webpack
-extr
+.build
+needtodo.md

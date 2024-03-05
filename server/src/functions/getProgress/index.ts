@@ -1,7 +1,8 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../../services/db";
+import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../../responses/index";
+import { sendResponse } from "../../responses/index";
+import httpErrorHandler from "@middy/http-error-handler";
 
 const getProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -12,8 +13,9 @@ const getProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
       // body: { },
     });
   } catch (error) {
-    return sendResponse(500, { success: false, message: "Internal Server Error" });
+    console.log(error);
+    throw new Error("Internal Server Error");
   }
 };
 
-export const handler = middy(getProgress).handler(getProgress);
+export const handler = middy(getProgress).use(httpErrorHandler());

@@ -1,11 +1,11 @@
 import { db } from "../services/db";
 import { User } from "../interfaces/index";
 import { v4 } from "uuid";
-import { hashPassword } from "../middleware/bcrypt";
+import { hashPassword } from "./bcrypt";
 
 export const checkUsername = async (username: string) => {
   const params = {
-    TableName: "allUsersDb",
+    TableName: "usersDb01",
     FilterExpression: "username = :username",
     ExpressionAttributeValues: {
       ":username": username,
@@ -29,7 +29,7 @@ export const addNewUser = async (username: string, email: string, password: stri
 
   await db
     .put({
-      TableName: "allUsersDb",
+      TableName: "usersDb01",
       Item: newUser,
     })
     .promise();

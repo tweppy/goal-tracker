@@ -1,16 +1,16 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../../services/db";
+import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../../responses/index";
+import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateTokenParam } from "../../../middleware/auth";
+import { validateTokenParam } from "../../middleware/auth";
 
 const getGoals = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     const userId = event.queryStringParameters?.userId;
 
     const params = {
-      TableName: "goalsDb",
+      TableName: "goalsDb01",
       FilterExpression: "userId = :userId",
       ExpressionAttributeValues: {
         ":userId": userId,
@@ -29,6 +29,7 @@ const getGoals = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
       body: { userId, goals: userGoals.Items },
     });
   } catch (error) {
+    console.log(error);
     throw new Error("Internal Server Error");
   }
 };

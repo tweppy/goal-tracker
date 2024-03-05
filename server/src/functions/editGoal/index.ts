@@ -1,12 +1,13 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../../services/db";
+import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../../responses/index";
+import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateToken } from "../../../middleware/auth";
-import { findGoalByGoalId } from "../../../middleware/goal";
+import { validateToken } from "../../middleware/auth";
+import { Goal } from "../../interfaces";
+import { findGoalByGoalId } from "../../middleware/goal";
 
-const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     if (!event.body || !event.pathParameters?.goalId) {
       return sendResponse(400, { success: false, message: "Missing request body or valid path parameter" });
@@ -25,18 +26,22 @@ const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
       return sendResponse(401, { success: false, message: "Unauthorized user" });
     }
 
+    const updatedGoal: Goal = {
+      ...result.Item,
+      ...reqBody,
+    };
+
     await db
-      .delete({
-        TableName: "goalsDb",
-        Key: {
-          goalId: goalId,
-        },
+      .put({
+        TableName: "goalsDb01",
+        Item: updatedGoal,
       })
       .promise();
 
     return sendResponse(200, {
       success: true,
-      message: "Goal removed successfully",
+      message: "Goal edited successfully",
+      body: { updatedGoal, old: result },
     });
   } catch (error) {
     console.log(error);
@@ -44,4 +49,4 @@ const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
   }
 };
 
-export const handler = middy(removeGoal).use(httpErrorHandler()).use(validateToken);
+export const handler = middy(editGoal).use(httpErrorHandler()).use(validateToken);

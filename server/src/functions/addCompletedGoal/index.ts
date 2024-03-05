@@ -1,10 +1,10 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../../services/db";
+import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../../responses/index";
+import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateToken } from "../../../middleware/auth";
-import { CompletedGoal } from "../../../interfaces";
+import { validateToken } from "../../middleware/auth";
+import { CompletedGoal } from "../../interfaces";
 import { v4 } from "uuid";
 import dayjs from "dayjs";
 
@@ -18,8 +18,26 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
     const reqBody = JSON.parse(event.body);
     const todayDate = dayjs().format("YYYY-MM-DD");
 
+    const params = {
+      TableName: "completedGoalsDb01",
+      KeyConditionExpression: "goalId = :goalId AND completionDate = :completionDate",
+      ExpressionAttributeValues: {
+        ":goalId": goalId,
+        ":completionDate": todayDate,
+      },
+    };
+
+    const result = await db.query(params).promise();
+
+    if (result.Items && result.Items.length > 0) {
+      return sendResponse(404, {
+        success: false,
+        message: "Goal already marked as complete for today",
+        body: { item: result.Items },
+      });
+    }
+
     const newCompletedGoal: CompletedGoal = {
-      completedGoalId: v4(),
       goalId,
       userId: reqBody.userId,
       completionDate: todayDate,
@@ -27,7 +45,7 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
 
     await db
       .put({
-        TableName: "completedGoalsDb",
+        TableName: "completedGoalsDb01",
         Item: newCompletedGoal,
       })
       .promise();

@@ -1,10 +1,10 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import dayjs from "dayjs";
-import { db } from "../../../services/db";
+import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../../responses/index";
+import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateTokenParam } from "../../../middleware/auth";
+import { validateTokenParam } from "../../middleware/auth";
 
 const getToday = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -17,12 +17,10 @@ const getToday = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
     const todayDate = dayjs().format("YYYY-MM-DD");
 
     const params = {
-      TableName: "goalsDb",
-      FilterExpression: "userId = :userId AND (dueDate = :dueDate OR repeatType = :repeatType OR contains(repeatDay, :repeatDay))",
+      TableName: "goalsDb01",
+      FilterExpression: "dueDate = :dueDate OR contains(repeatDay, :repeatDay)",
       ExpressionAttributeValues: {
-        ":userId": userId,
         ":repeatDay": todayNum,
-        ":repeatType": "daily",
         ":dueDate": todayDate,
       },
     };

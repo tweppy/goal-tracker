@@ -1,0 +1,12 @@
+getProgress:
+  handler: "./src/functions/getProgress/index.handler"
+  events:
+    - httpApi:
+        path: /api/progress
+        method: GET
+getGoalProgress:
+  handler: "./src/functions/getGoalProgress/index.handler"
+  events:
+    - httpApi:
+        path: /api/progress/{goalId}
+        method: GET

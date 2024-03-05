@@ -2,9 +2,9 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import jwt from "jsonwebtoken";
 import httpErrorHandler from "@middy/http-error-handler";
-import { sendResponse } from "../../../responses/index";
-import { checkUsername } from "../../../middleware/user";
-import { comparePassword } from "../../../middleware/bcrypt";
+import { sendResponse } from "../../responses/index";
+import { checkUsername } from "../../middleware/user";
+import { comparePassword } from "../../middleware/bcrypt";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -36,7 +36,7 @@ const userLogin = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRe
     }
 
     const token = jwt.sign({ userId: userData.userId }, process.env.JWT_SECRET || "default-value", {
-      expiresIn: 3600,
+      expiresIn: 21600,
     });
 
     return sendResponse(200, {
@@ -45,6 +45,7 @@ const userLogin = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRe
       body: { token, userId: userData.userId },
     });
   } catch (error) {
+    console.log(error);
     throw new Error("Internal Server Error");
   }
 };
