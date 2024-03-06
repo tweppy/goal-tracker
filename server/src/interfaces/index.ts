@@ -6,6 +6,12 @@ export interface ResponseBody {
   body?: object | string;
 }
 
+export interface ValidateSchemaRequest {
+  event: {
+    body: Goal | User | CompletedGoal;
+  };
+}
+
 export interface ValidateTokenRequest {
   event: {
     queryStringParameters: {
@@ -32,17 +38,16 @@ export interface User {
 }
 
 export interface Goal {
-  goalId: string;
+  goalId?: string;
   userId: string;
   goalName: string;
   description?: string;
-  dueDate?: string | null;
+  dueDate?: string;
   repeatType: "daily" | "weekly" | "weekdays" | "weekends" | "none";
   repeatDay?: number[];
 }
 
 export interface CompletedGoal {
-  // completedGoalId: string;
   goalId: string;
   userId: string;
   completionDate: string;

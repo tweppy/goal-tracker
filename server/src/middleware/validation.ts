@@ -1,10 +1,29 @@
 import jwt from "jsonwebtoken";
-import { sendResponse } from "../responses/index";
+import Joi, { ValidationError } from "joi";
 import dotenv from "dotenv";
+
+import { sendResponse } from "../responses/index";
 import { TokenData } from "../interfaces";
-import { ValidateTokenRequest } from "../interfaces";
+import { ValidateTokenRequest, ValidateSchemaRequest } from "../interfaces";
 
 dotenv.config();
+
+export const validateSchema = (schema: Joi.Schema) => {
+  return {
+    before: async (request: ValidateSchemaRequest) => {
+      try {
+        await schema.validateAsync(request.event.body);
+      } catch (error) {
+        const validationError = error as ValidationError;
+        return sendResponse(400, {
+          success: false,
+          message: "Invalid request body",
+          body: { error: validationError.details },
+        });
+      }
+    },
+  };
+};
 
 export const validateToken = {
   before: async (request: ValidateTokenRequest) => {
