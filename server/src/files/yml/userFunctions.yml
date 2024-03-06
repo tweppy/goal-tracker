@@ -3,10 +3,10 @@ userSignup:
   events:
     - httpApi:
         path: /api/user/signup
-        method: post
+        method: POST
 userLogin:
   handler: "./src/functions/userLogin/index.handler"
   events:
     - httpApi:
         path: /api/user/login
-        method: post
+        method: POST
