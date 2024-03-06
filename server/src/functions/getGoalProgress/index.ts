@@ -1,18 +1,23 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateTokenParam } from "../../middleware/auth";
+import httpEventNormalizer from "@middy/http-event-normalizer";
+
+import { db } from "../../services/db";
+import { sendResponse } from "../../responses/index";
+import { validateToken } from "../../middleware/validation";
 
 const getGoalProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    if (!event.pathParameters?.goalId || !event.queryStringParameters?.userId) {
-      return sendResponse(400, { success: false, message: "Missing valid path parameter or query string parameter" });
+    if (!event.pathParameters?.goalId || !event.requestContext.authorizer) {
+      return sendResponse(400, {
+        success: false,
+        message: "Missing valid path parameter or request context authorizer",
+      });
     }
 
     const goalId = event.pathParameters.goalId;
-    const userId = event.queryStringParameters.userId;
+    const userId = event.requestContext.authorizer.userId;
 
     const params = {
       TableName: "completedGoalsDb01",
@@ -29,13 +34,16 @@ const getGoalProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayP
     }
 
     if (userId !== result.Items[0].userId) {
-      return sendResponse(401, { success: false, message: "Unauthorized user" });
+      return sendResponse(401, {
+        success: false,
+        message: "Unauthorized: You do not have permission to access this goal progress data",
+      });
     }
 
     return sendResponse(200, {
       success: true,
       message: "Goal found",
-      body: { userId, goal: result.Items },
+      body: { goalProgress: result.Items },
     });
   } catch (error) {
     console.log(error);
@@ -43,4 +51,4 @@ const getGoalProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayP
   }
 };
 
-export const handler = middy(getGoalProgress).use(httpErrorHandler()).use(validateTokenParam);
+export const handler = middy(getGoalProgress).use(httpEventNormalizer()).use(validateToken).use(httpErrorHandler());
