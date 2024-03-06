@@ -33,7 +33,12 @@ const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
       });
     }
 
-    await db.delete(result.Item[0]).promise();
+    const params = {
+      TableName: "goalsDb01",
+      Key: { goalId },
+    };
+
+    await db.delete(params).promise();
 
     return sendResponse(200, {
       success: true,
