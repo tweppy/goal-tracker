@@ -1,7 +1,17 @@
 import Joi from "joi";
 
+export const userSchema = Joi.object({
+  username: Joi.string().min(3).required(),
+  email: Joi.string().required(), //add more
+  password: Joi.string().min(8).required(),
+});
+
+export const loginSchema = Joi.object({
+  username: Joi.string().required(),
+  password: Joi.string().required(),
+});
+
 export const goalSchema = Joi.object({
-  userId: Joi.string().required(),
   goalName: Joi.string().min(2).required(),
   description: Joi.string().min(2).optional(),
   dueDate: Joi.when("repeatType", {

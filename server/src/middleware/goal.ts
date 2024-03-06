@@ -26,5 +26,3 @@ export const findGoalsByUserId = async (userId: string, table: string) => {
 
   return result;
 };
-
-export const isGoalCompletedToday = async (goalId: string, date: string) => {};
