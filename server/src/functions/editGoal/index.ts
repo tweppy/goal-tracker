@@ -1,20 +1,23 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../responses/index";
+import jsonBodyParser from "@middy/http-json-body-parser";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateToken } from "../../middleware/auth";
-import { Goal } from "../../interfaces";
+
+import { db } from "../../services/db";
+import { sendResponse } from "../../responses/index";
+import { validateToken, validateSchema } from "../../middleware/validation";
 import { findGoalByGoalId } from "../../middleware/goal";
+import { Goal } from "../../interfaces/index";
+import { goalSchema } from "../../schemas/index";
 
 const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    if (!event.body || !event.pathParameters?.goalId) {
-      return sendResponse(400, { success: false, message: "Missing request body or valid path parameter" });
+    if (!event.pathParameters?.goalId) {
+      return sendResponse(400, { success: false, message: "Missing valid path parameter" });
     }
 
-    const goalId = event.pathParameters.goalId;
-    const reqBody = JSON.parse(event.body);
+    const goalId = event.pathParameters.goalId as string;
+    const reqBody = event.body as unknown as Goal;
 
     const result = await findGoalByGoalId(goalId);
 
@@ -49,4 +52,8 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
   }
 };
 
-export const handler = middy(editGoal).use(httpErrorHandler()).use(validateToken);
+export const handler = middy(editGoal)
+  .use(httpErrorHandler())
+  .use(validateToken)
+  .use(jsonBodyParser())
+  .use(validateSchema(goalSchema));
