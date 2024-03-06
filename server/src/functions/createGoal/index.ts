@@ -8,7 +8,7 @@ import { db } from "../../services/db";
 import { sendResponse } from "../../responses/index";
 import { validateToken, validateSchema } from "../../middleware/validation";
 import { Goal } from "../../interfaces/index";
-import { createGoalSchema } from "../../schemas/index";
+import { goalSchema } from "../../schemas/index";
 
 const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
@@ -41,4 +41,4 @@ export const handler = middy(createGoal)
   .use(httpErrorHandler())
   .use(validateToken)
   .use(jsonBodyParser())
-  .use(validateSchema(createGoalSchema));
+  .use(validateSchema(goalSchema));

@@ -1,6 +1,6 @@
 import Joi from "joi";
 
-export const createGoalSchema = Joi.object({
+export const goalSchema = Joi.object({
   userId: Joi.string().required(),
   goalName: Joi.string().min(2).required(),
   description: Joi.string().min(2).optional(),
