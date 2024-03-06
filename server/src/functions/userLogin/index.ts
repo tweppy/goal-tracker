@@ -2,23 +2,26 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import jwt from "jsonwebtoken";
 import httpErrorHandler from "@middy/http-error-handler";
+import httpEventNormalizer from "@middy/http-event-normalizer";
+import jsonBodyParser from "@middy/http-json-body-parser";
+import dotenv from "dotenv";
+
 import { sendResponse } from "../../responses/index";
 import { checkUsername } from "../../middleware/user";
 import { comparePassword } from "../../middleware/bcrypt";
-import dotenv from "dotenv";
+import { validateSchema } from "../../middleware/validation";
+import { loginSchema } from "../../schemas";
+import { User } from "../../interfaces/index";
+
 dotenv.config();
 
 const userLogin = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
     if (!event.body) {
-      return sendResponse(400, { success: false, message: "Request body is missing" });
+      return sendResponse(400, { success: false, message: "Missing valid request body" });
     }
 
-    const { username, password } = JSON.parse(event.body);
-
-    if (!username || !password) {
-      return sendResponse(400, { success: false, message: "Username and password are required" });
-    }
+    const { username, password } = event.body as unknown as User;
 
     const existingUsername = await checkUsername(username);
 
@@ -50,4 +53,8 @@ const userLogin = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRe
   }
 };
 
-export const handler = middy(userLogin).use(httpErrorHandler());
+export const handler = middy(userLogin)
+  .use(httpEventNormalizer())
+  .use(jsonBodyParser())
+  .use(validateSchema(loginSchema))
+  .use(httpErrorHandler());
