@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import httpErrorHandler from "@middy/http-error-handler";
+import httpEventNormalizer from "@middy/http-event-normalizer";
 
 import { db } from "../../services/db";
 import { sendResponse } from "../../responses/index";
@@ -12,11 +13,15 @@ import { goalSchema } from "../../schemas/index";
 
 const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    if (!event.pathParameters?.goalId) {
-      return sendResponse(400, { success: false, message: "Missing valid path parameter" });
+    if (!event.pathParameters?.goalId || !event.requestContext.authorizer) {
+      return sendResponse(400, {
+        success: false,
+        message: "Missing valid path parameter or request context authorizer",
+      });
     }
 
-    const goalId = event.pathParameters.goalId as string;
+    const goalId = event.pathParameters.goalId;
+    const userId = event.requestContext.authorizer.userId;
     const reqBody = event.body as unknown as Goal;
 
     const result = await findGoalByGoalId(goalId);
@@ -25,8 +30,11 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
       return sendResponse(404, { success: false, message: "Goal not found" });
     }
 
-    if (reqBody.userId !== result.Item.userId) {
-      return sendResponse(401, { success: false, message: "Unauthorized user" });
+    if (userId !== result.Item.userId) {
+      return sendResponse(403, {
+        success: false,
+        message: "Unauthorized: You do not have permission to access this goal",
+      });
     }
 
     const updatedGoal: Goal = {
@@ -53,7 +61,8 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
 };
 
 export const handler = middy(editGoal)
-  .use(httpErrorHandler())
-  .use(validateToken)
+  .use(httpEventNormalizer())
   .use(jsonBodyParser())
-  .use(validateSchema(goalSchema));
+  .use(validateToken)
+  .use(validateSchema(goalSchema))
+  .use(httpErrorHandler());

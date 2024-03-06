@@ -2,6 +2,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import httpErrorHandler from "@middy/http-error-handler";
+import httpEventNormalizer from "@middy/http-event-normalizer";
 import { v4 } from "uuid";
 
 import { db } from "../../services/db";
@@ -12,11 +13,20 @@ import { goalSchema } from "../../schemas/index";
 
 const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
+    if (!event.requestContext.authorizer) {
+      return sendResponse(400, {
+        success: false,
+        message: "Missing valid request context authorizer",
+      });
+    }
+
     const reqBody = event.body as unknown as Goal;
+    const userId = event.requestContext.authorizer.userId;
 
     const newGoal: Goal = {
       ...reqBody,
       goalId: v4(),
+      userId,
     };
 
     await db
@@ -38,7 +48,8 @@ const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
 };
 
 export const handler = middy(createGoal)
-  .use(httpErrorHandler())
-  .use(validateToken)
+  .use(httpEventNormalizer())
   .use(jsonBodyParser())
-  .use(validateSchema(goalSchema));
+  .use(validateToken)
+  .use(validateSchema(goalSchema))
+  .use(httpErrorHandler());

@@ -1,37 +1,39 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateToken } from "../../middleware/auth";
+import httpEventNormalizer from "@middy/http-event-normalizer";
+
+import { db } from "../../services/db";
+import { sendResponse } from "../../responses/index";
+import { validateToken } from "../../middleware/validation";
+import { findGoalByGoalId } from "../../middleware/goal";
 
 const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    if (!event.body || !event.pathParameters?.goalId) {
-      return sendResponse(400, { success: false, message: "Missing request body or valid path parameter" });
+    if (!event.pathParameters?.goalId || !event.requestContext.authorizer) {
+      return sendResponse(400, {
+        success: false,
+        message: "Missing valid path parameter or request context authorizer",
+      });
     }
 
     const goalId = event.pathParameters.goalId;
-    const reqBody = JSON.parse(event.body);
+    const userId = event.requestContext.authorizer.userId;
 
-    const params = {
-      TableName: "goalsDb01",
-      Key: {
-        goalId: goalId,
-      },
-    };
-
-    const result = await db.get(params).promise();
+    const result = await findGoalByGoalId(goalId);
 
     if (!result.Item) {
       return sendResponse(404, { success: false, message: "Goal not found" });
     }
 
-    if (reqBody.userId !== result.Item.userId) {
-      return sendResponse(401, { success: false, message: "Unauthorized user" });
+    if (userId !== result.Item.userId) {
+      return sendResponse(403, {
+        success: false,
+        message: "Unauthorized: You do not have permission to access this goal",
+      });
     }
 
-    await db.delete(params).promise();
+    await db.delete(result.Item[0]).promise();
 
     return sendResponse(200, {
       success: true,
@@ -43,4 +45,4 @@ const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
   }
 };
 
-export const handler = middy(removeGoal).use(httpErrorHandler()).use(validateToken);
+export const handler = middy(removeGoal).use(httpEventNormalizer()).use(validateToken).use(httpErrorHandler());
