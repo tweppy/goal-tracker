@@ -60,6 +60,8 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
       goalId,
       userId,
       completionDate: todayDate,
+      goalName: result.Item.goalName,
+      description: result.Item.description,
     };
 
     await db
