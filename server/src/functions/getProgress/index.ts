@@ -1,32 +1,40 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateTokenParam } from "../../middleware/auth";
+import httpEventNormalizer from "@middy/http-event-normalizer";
+
+import { sendResponse } from "../../responses/index";
+import { validateToken } from "../../middleware/validation";
+import { findGoalsByUserId } from "../../middleware/goal";
 
 const getProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    const userId = event.queryStringParameters?.userId;
+    if (!event.requestContext.authorizer) {
+      return sendResponse(400, {
+        success: false,
+        message: "Missing valid request context authorizer",
+      });
+    }
 
-    const params = {
-      TableName: "completedGoalsDb01",
-      FilterExpression: "userId = :userId",
-      ExpressionAttributeValues: {
-        ":userId": userId,
-      },
-    };
+    const userId = event.requestContext.authorizer.userId;
 
-    const userProgress = await db.scan(params).promise();
+    const result = await findGoalsByUserId(userId, "completedGoalsDb01");
 
-    if (userProgress.Count === 0) {
+    if (!result.Items) {
       return sendResponse(404, { success: false, message: "No progress or completed goals found" });
+    }
+
+    if (userId !== result.Items[0].userId) {
+      return sendResponse(403, {
+        success: false,
+        message: "Unauthorized: You do not have permission to access this progress data",
+      });
     }
 
     return sendResponse(200, {
       success: true,
       message: "Progress retrieved successfully",
-      body: { userId, progress: userProgress.Items },
+      body: { progress: result.Items },
     });
   } catch (error) {
     console.log(error);
@@ -34,4 +42,4 @@ const getProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
   }
 };
 
-export const handler = middy(getProgress).use(httpErrorHandler()).use(validateTokenParam);
+export const handler = middy(getProgress).use(httpEventNormalizer()).use(validateToken).use(httpErrorHandler());
