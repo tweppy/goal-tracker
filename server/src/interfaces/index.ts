@@ -3,7 +3,7 @@ import { APIGatewayProxyResult } from "aws-lambda";
 export interface ResponseBody {
   success: boolean;
   message: string;
-  body?: object | string;
+  body?: object;
 }
 
 export interface ValidateSchemaRequest {
@@ -38,13 +38,13 @@ export interface User {
 }
 
 export interface Goal {
-  goalId?: string;
+  goalId: string;
   userId: string;
   goalName: string;
   description?: string;
-  dueDate?: string;
-  repeatType: "daily" | "weekly" | "weekdays" | "weekends" | "none";
-  repeatDay?: number[];
+  dueDate: string;
+  repeatType: string;
+  repeatDay: number[] | string;
 }
 
 export interface CompletedGoal {

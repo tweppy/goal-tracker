@@ -15,8 +15,8 @@ const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
     const reqBody = event.body as unknown as Goal;
 
     const newGoal: Goal = {
-      goalId: v4(),
       ...reqBody,
+      goalId: v4(),
     };
 
     await db
