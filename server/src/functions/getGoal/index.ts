@@ -1,8 +1,9 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import middy from "@middy/core";
 import httpErrorHandler from "@middy/http-error-handler";
+
 import { sendResponse } from "../../responses/index";
-import { validateTokenParam } from "../../middleware/auth";
+import { validateTokenParam } from "../../middleware/validation";
 import { findGoalByGoalId } from "../../middleware/goal";
 
 const getGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
@@ -18,10 +19,6 @@ const getGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResu
 
     if (!result.Item) {
       return sendResponse(404, { success: false, message: "Goal not found" });
-    }
-
-    if (userId !== result.Item.userId) {
-      return sendResponse(401, { success: false, message: "Unauthorized user" });
     }
 
     return sendResponse(200, {

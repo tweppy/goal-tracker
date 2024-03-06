@@ -44,7 +44,7 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
     return sendResponse(200, {
       success: true,
       message: "Goal edited successfully",
-      body: { updatedGoal, old: result },
+      body: { updatedGoal },
     });
   } catch (error) {
     console.log(error);

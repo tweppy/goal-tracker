@@ -1,23 +1,20 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../responses/index";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateTokenParam } from "../../middleware/auth";
+
+import { sendResponse } from "../../responses/index";
+import { validateTokenParam } from "../../middleware/validation";
+import { findGoalsByUserId } from "../../middleware/goal";
 
 const getGoals = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    const userId = event.queryStringParameters?.userId;
+    if (!event.queryStringParameters?.userId) {
+      return sendResponse(400, { success: false, message: "Missing valid query string parameter" });
+    }
 
-    const params = {
-      TableName: "goalsDb01",
-      FilterExpression: "userId = :userId",
-      ExpressionAttributeValues: {
-        ":userId": userId,
-      },
-    };
+    const userId = event.queryStringParameters.userId;
 
-    const userGoals = await db.scan(params).promise();
+    const userGoals = await findGoalsByUserId(userId, "goalsDb01");
 
     if (userGoals.Count === 0) {
       return sendResponse(404, { success: false, message: `Failed to retrieve goals for userId: '${userId}'` });
