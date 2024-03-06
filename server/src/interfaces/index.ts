@@ -14,13 +14,14 @@ export interface ValidateSchemaRequest {
 
 export interface ValidateTokenRequest {
   event: {
-    queryStringParameters: {
-      [key: string]: string;
-    };
     headers: {
-      authorization?: string;
+      authorization: string;
     };
-    body: string;
+    requestContext: {
+      authorizer: {
+        userId: string;
+      };
+    };
     error?: string;
   };
   response: APIGatewayProxyResult;
