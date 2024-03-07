@@ -24,24 +24,18 @@ const getToday = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
 
     const params = {
       TableName: "goalsDb01",
-      FilterExpression: "dueDate = :dueDate OR contains(repeatDay, :repeatDay)",
+      FilterExpression: "userId = :userId AND (dueDate = :dueDate OR contains(repeatDay, :repeatDay))",
       ExpressionAttributeValues: {
-        ":repeatDay": todayNum,
+        ":userId": userId,
         ":dueDate": todayDate,
+        ":repeatDay": todayNum,
       },
     };
 
     const result = await db.scan(params).promise();
 
-    if (!result.Items) {
+    if (result.Items && result.Items.length === 0) {
       return sendResponse(404, { success: false, message: "Found no goals due today" });
-    }
-
-    if (userId !== result.Items[0].userId) {
-      return sendResponse(403, {
-        success: false,
-        message: "Unauthorized: You do not have permission to access these goals",
-      });
     }
 
     return sendResponse(200, {
