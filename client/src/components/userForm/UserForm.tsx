@@ -1,3 +1,5 @@
+// import "./style.scss";
+
 import { useState } from "react";
 import { postUserToApi } from "../../services/api";
 import { ApiSubmission } from "../../interfaces";
