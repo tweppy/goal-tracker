@@ -2,7 +2,7 @@ import Joi from "joi";
 
 export const userSchema = Joi.object({
   username: Joi.string().min(3).required(),
-  email: Joi.string().required(), //add more
+  email: Joi.string().email({ tlds: { allow: false } }).required().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
   password: Joi.string().min(8).required(),
 });
 
