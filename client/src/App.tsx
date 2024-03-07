@@ -1,9 +1,11 @@
-import "./App.css";
+import "./App.scss";
+
+import { AppRoutes } from "./router";
 
 function App() {
   return (
     <>
-      <h1>home</h1>
+      <AppRoutes />
     </>
   );
 }
