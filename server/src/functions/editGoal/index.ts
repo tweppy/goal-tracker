@@ -1,20 +1,28 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { db } from "../../services/db";
 import middy from "@middy/core";
-import { sendResponse } from "../../responses/index";
+import jsonBodyParser from "@middy/http-json-body-parser";
 import httpErrorHandler from "@middy/http-error-handler";
-import { validateToken } from "../../middleware/auth";
-import { Goal } from "../../interfaces";
+import httpEventNormalizer from "@middy/http-event-normalizer";
+
+import { db } from "../../services/db";
+import { sendResponse } from "../../responses/index";
+import { validateToken, validateSchema } from "../../middleware/validation";
 import { findGoalByGoalId } from "../../middleware/goal";
+import { Goal } from "../../interfaces/index";
+import { goalSchema } from "../../schemas/index";
 
 const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    if (!event.body || !event.pathParameters?.goalId) {
-      return sendResponse(400, { success: false, message: "Missing request body or valid path parameter" });
+    if (!event.pathParameters?.goalId || !event.requestContext.authorizer) {
+      return sendResponse(400, {
+        success: false,
+        message: "Missing valid path parameter or request context authorizer",
+      });
     }
 
     const goalId = event.pathParameters.goalId;
-    const reqBody = JSON.parse(event.body);
+    const userId = event.requestContext.authorizer.userId;
+    const reqBody = event.body as unknown as Goal;
 
     const result = await findGoalByGoalId(goalId);
 
@@ -22,8 +30,11 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
       return sendResponse(404, { success: false, message: "Goal not found" });
     }
 
-    if (reqBody.userId !== result.Item.userId) {
-      return sendResponse(401, { success: false, message: "Unauthorized user" });
+    if (userId !== result.Item.userId) {
+      return sendResponse(403, {
+        success: false,
+        message: "Unauthorized: You do not have permission to access this goal",
+      });
     }
 
     const updatedGoal: Goal = {
@@ -41,7 +52,7 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
     return sendResponse(200, {
       success: true,
       message: "Goal edited successfully",
-      body: { updatedGoal, old: result },
+      body: { updatedGoal },
     });
   } catch (error) {
     console.log(error);
@@ -49,4 +60,9 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
   }
 };
 
-export const handler = middy(editGoal).use(httpErrorHandler()).use(validateToken);
+export const handler = middy(editGoal)
+  .use(httpEventNormalizer())
+  .use(jsonBodyParser())
+  .use(validateToken)
+  .use(validateSchema(goalSchema))
+  .use(httpErrorHandler());

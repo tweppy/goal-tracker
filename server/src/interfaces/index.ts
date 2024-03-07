@@ -3,18 +3,25 @@ import { APIGatewayProxyResult } from "aws-lambda";
 export interface ResponseBody {
   success: boolean;
   message: string;
-  body?: object | string;
+  body?: object;
+}
+
+export interface ValidateSchemaRequest {
+  event: {
+    body: Goal | User | CompletedGoal;
+  };
 }
 
 export interface ValidateTokenRequest {
   event: {
-    queryStringParameters: {
-      [key: string]: string;
-    };
     headers: {
-      authorization?: string;
+      authorization: string;
     };
-    body: string;
+    requestContext: {
+      authorizer: {
+        userId: string;
+      };
+    };
     error?: string;
   };
   response: APIGatewayProxyResult;
@@ -36,14 +43,15 @@ export interface Goal {
   userId: string;
   goalName: string;
   description?: string;
-  dueDate?: string | null;
-  repeatType: "daily" | "weekly" | "weekdays" | "weekends" | "none";
-  repeatDay?: number[];
+  dueDate: string;
+  repeatType: string;
+  repeatDay: number[] | string;
 }
 
 export interface CompletedGoal {
-  // completedGoalId: string;
   goalId: string;
   userId: string;
   completionDate: string;
+  goalName: string;
+  description?: string;
 }
