@@ -51,8 +51,7 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
     if (isGoalCompleted.Items && isGoalCompleted.Items.length > 0) {
       return sendResponse(404, {
         success: false,
-        message: "Goal already marked as complete for today",
-        body: { item: isGoalCompleted.Items },
+        message: "Goal already marked as completed for today",
       });
     }
 

@@ -20,15 +20,8 @@ const getProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
 
     const result = await findGoalsByUserId(userId, "completedGoalsDb01");
 
-    if (!result.Items) {
+    if (result.Items && result.Items.length === 0) {
       return sendResponse(404, { success: false, message: "No progress or completed goals found" });
-    }
-
-    if (userId !== result.Items[0].userId) {
-      return sendResponse(403, {
-        success: false,
-        message: "Unauthorized: You do not have permission to access this progress data",
-      });
     }
 
     return sendResponse(200, {

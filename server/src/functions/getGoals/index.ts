@@ -23,14 +23,7 @@ const getGoals = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
     if (!result.Items) {
       return sendResponse(404, { success: false, message: `Failed to retrieve goals for userId: '${userId}'` });
     }
-
-    if (userId !== result.Items[0].userId) {
-      return sendResponse(403, {
-        success: false,
-        message: "Unauthorized: You do not have permission to access these goals",
-      });
-    }
-
+    
     return sendResponse(200, {
       success: true,
       message: "Goals retrieved successfully",

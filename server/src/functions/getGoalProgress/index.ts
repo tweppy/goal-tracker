@@ -21,25 +21,19 @@ const getGoalProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayP
 
     const params = {
       TableName: "completedGoalsDb01",
-      KeyConditionExpression: "goalId = :goalId",
+      FilterExpression: "userId = :userId AND goalId = :goalId",
       ExpressionAttributeValues: {
+        ":userId": userId,
         ":goalId": goalId,
       },
     };
 
-    const result = await db.query(params).promise();
+    const result = await db.scan(params).promise();
 
-    if (!result.Items) {
+    if (result.Items && result.Items.length === 0) {
       return sendResponse(404, { success: false, message: "Goal progress not found" });
     }
-
-    if (userId !== result.Items[0].userId) {
-      return sendResponse(401, {
-        success: false,
-        message: "Unauthorized: You do not have permission to access this goal progress data",
-      });
-    }
-
+    
     return sendResponse(200, {
       success: true,
       message: "Goal found",
