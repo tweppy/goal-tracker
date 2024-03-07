@@ -1,7 +1,11 @@
-import React from 'react'
+// import "./style.scss";
+
+import { UserForm } from "../../components/userForm/UserForm";
 
 export const SignupPage = () => {
   return (
-    <div>SignupPage</div>
-  )
-}
+    <main className="signup-page">
+      <UserForm heading="Signup" />
+    </main>
+  );
+};
