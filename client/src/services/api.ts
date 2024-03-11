@@ -30,7 +30,7 @@ export const postUserToApi = async (data: ApiSubmission) => {
 export const getApiData = async (data: ApiSubmission) => {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
-  
+
   try {
     const response = await fetch(baseUrl + data.link, {
       method: data.method,
@@ -42,7 +42,7 @@ export const getApiData = async (data: ApiSubmission) => {
 
     const result = await response.json();
     console.log("RESULT:", result);
-
+    
     return result;
   } catch (error) {
     console.log(error);
