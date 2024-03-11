@@ -15,7 +15,7 @@ export const postUserToApi = async (data: ApiSubmission) => {
     const result = await response.json();
     console.log("RESULT:", result);
 
-    if (data.link === "login") {
+    if (result.body.token) {
       const token = result.body.token;
       localStorage.setItem("token", token);
     }
@@ -27,12 +27,13 @@ export const postUserToApi = async (data: ApiSubmission) => {
 };
 
 // with auth (NO BODY)
-export const getApiData = async (method: string, link: string) => {
+export const getApiData = async (data: ApiSubmission) => {
+  const baseUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
-
+  
   try {
-    const response = await fetch(import.meta.env.VITE_BASE_URL + link, {
-      method: method,
+    const response = await fetch(baseUrl + data.link, {
+      method: data.method,
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

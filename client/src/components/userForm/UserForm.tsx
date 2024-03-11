@@ -34,7 +34,7 @@ export const UserForm = ({ heading }: UserFormProps) => {
       password,
     };
 
-    await handleSubmit({ currentPath: "/login", userInputData, redirectLink: "/goals" });
+    await handleSubmit({ currentPath: "/login", userInputData, redirectLink: "/today" });
   };
 
   const handleSignup = async () => {
