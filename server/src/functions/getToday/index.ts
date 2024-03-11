@@ -38,10 +38,25 @@ const getToday = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
       return sendResponse(404, { success: false, message: "Found no goals due today" });
     }
 
+    const completedGoalsParams = {
+      TableName: "completedGoalsDb01",
+      FilterExpression: "userId = :userId AND completionDate = :completionDate",
+      ExpressionAttributeValues: {
+        ":userId": userId,
+        ":completionDate": todayDate,
+      },
+    };
+
+    const completedGoalsResult = await db.scan(completedGoalsParams).promise();
+
+    const filteredGoals = result.Items?.filter((goal) => {
+      return !completedGoalsResult.Items?.some((completedGoal) => completedGoal.goalId === goal.goalId);
+    });
+
     return sendResponse(200, {
       success: true,
       message: "Today's goals successfully retrieved",
-      body: { userId, date: todayDate, goalsDueToday: result.Items },
+      body: { userId, date: todayDate, goalsDueToday: filteredGoals },
     });
   } catch (error) {
     console.log(error);
