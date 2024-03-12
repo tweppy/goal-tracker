@@ -1,5 +1,5 @@
 import { ApiSubmission } from "../interfaces";
-import { getApiData } from "../services/api";
+import { submitToApi } from "../services/api";
 
 export const getGoalData = async (id: string) => {
   const apiSubmissionGoalData: ApiSubmission = {
@@ -8,7 +8,7 @@ export const getGoalData = async (id: string) => {
   };
 
   try {
-    const response = await getApiData(apiSubmissionGoalData);
+    const response = await submitToApi(apiSubmissionGoalData);
     const goal = response.body.goal;
 
     return goal;

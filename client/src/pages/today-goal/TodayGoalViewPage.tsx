@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { getApiData } from "../../services/api";
+import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 import { getGoalData } from "../../utils/helpers";
@@ -16,7 +16,7 @@ export const TodayGoalViewPage = () => {
 
   const handleCompleteGoal = async () => {
     try {
-      await getApiData({ method: "POST", link: "/today/" + id });
+      await submitToApi({ method: "POST", link: "/today/" + id });
       setCompleted(true);
       setTimeout(() => {
          navigate("/today");
