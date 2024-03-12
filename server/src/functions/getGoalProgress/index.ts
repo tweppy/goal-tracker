@@ -20,7 +20,7 @@ const getGoalProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayP
     const userId = event.requestContext.authorizer.userId;
 
     const params = {
-      TableName: "completedGoalsDb01",
+      TableName: "completedGoalsDb02",
       FilterExpression: "userId = :userId AND goalId = :goalId",
       ExpressionAttributeValues: {
         ":userId": userId,

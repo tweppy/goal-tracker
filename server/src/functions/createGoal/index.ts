@@ -31,7 +31,7 @@ const createGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
 
     await db
       .put({
-        TableName: "goalsDb01",
+        TableName: "goalsDb02",
         Item: newGoal,
       })
       .promise();

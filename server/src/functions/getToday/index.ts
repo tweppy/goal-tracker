@@ -23,7 +23,7 @@ const getToday = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
     const todayDate = dayjs().format("YYYY-MM-DD");
 
     const params = {
-      TableName: "goalsDb01",
+      TableName: "goalsDb02",
       FilterExpression: "userId = :userId AND (dueDate = :dueDate OR contains(repeatDay, :repeatDay))",
       ExpressionAttributeValues: {
         ":userId": userId,
@@ -39,11 +39,11 @@ const getToday = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
     }
 
     const completedGoalsParams = {
-      TableName: "completedGoalsDb01",
-      FilterExpression: "userId = :userId AND completionDate = :completionDate",
+      TableName: "completedGoalsDb02",
+      FilterExpression: "userId = :userId AND completedOn = :completedOn",
       ExpressionAttributeValues: {
         ":userId": userId,
-        ":completionDate": todayDate,
+        ":completedOn": todayDate,
       },
     };
 

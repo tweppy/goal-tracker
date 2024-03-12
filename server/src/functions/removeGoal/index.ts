@@ -34,7 +34,7 @@ const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
     }
 
     const params = {
-      TableName: "goalsDb01",
+      TableName: "goalsDb02",
       Key: { goalId },
     };
 

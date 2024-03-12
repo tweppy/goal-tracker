@@ -1,8 +1,8 @@
 Resources:
-  usersDb01:
+  usersDb02:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: usersDb01
+      TableName: usersDb02
       AttributeDefinitions:
         - AttributeName: userId
           AttributeType: S
@@ -10,10 +10,10 @@ Resources:
         - AttributeName: userId
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
-  goalsDb01:
+  goalsDb02:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: goalsDb01
+      TableName: goalsDb02
       AttributeDefinitions:
         - AttributeName: goalId
           AttributeType: S
@@ -21,18 +21,18 @@ Resources:
         - AttributeName: goalId
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
-  completedGoalsDb01:
+  completedGoalsDb02:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: completedGoalsDb01
+      TableName: completedGoalsDb02
       AttributeDefinitions:
         - AttributeName: goalId
           AttributeType: S
-        - AttributeName: completionDate
+        - AttributeName: completedOn
           AttributeType: S
       KeySchema:
         - AttributeName: goalId
           KeyType: HASH
-        - AttributeName: completionDate
+        - AttributeName: completedOn
           KeyType: RANGE
       BillingMode: PAY_PER_REQUEST

@@ -5,7 +5,7 @@ import { hashPassword } from "./bcrypt";
 
 export const checkUsername = async (username: string) => {
   const params = {
-    TableName: "usersDb01",
+    TableName: "usersDb02",
     FilterExpression: "username = :username",
     ExpressionAttributeValues: {
       ":username": username,
@@ -29,7 +29,7 @@ export const addNewUser = async (username: string, email: string, password: stri
 
   await db
     .put({
-      TableName: "usersDb01",
+      TableName: "usersDb02",
       Item: newUser,
     })
     .promise();

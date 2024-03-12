@@ -51,7 +51,7 @@ export interface Goal {
 export interface CompletedGoal {
   goalId: string;
   userId: string;
-  completionDate: string;
+  completedOn: string;
   goalName: string;
   description?: string;
 }
