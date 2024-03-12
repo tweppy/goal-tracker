@@ -26,8 +26,7 @@ export const postUserToApi = async (data: ApiSubmission) => {
   }
 };
 
-// with auth (NO BODY)
-export const getApiData = async (data: ApiSubmission) => {
+export const submitToApi = async (data: ApiSubmission) => {
   const baseUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
 

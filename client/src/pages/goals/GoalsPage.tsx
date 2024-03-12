@@ -1,4 +1,4 @@
-import { getApiData } from "../../services/api";
+import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 
@@ -9,7 +9,7 @@ export const GoalsPage = () => {
 
   const getUserGoals = async () => {
     try {
-      const response = await getApiData({ method: "GET", link: "/goals" });
+      const response = await submitToApi({ method: "GET", link: "/goals" });
       setGoals(response.body.goals);
     } catch (error) {
       console.error("Error fetching goals:", error);

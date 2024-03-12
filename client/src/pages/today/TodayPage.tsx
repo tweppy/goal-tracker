@@ -1,7 +1,7 @@
 // import "./style.scss";
 import { useEffect, useState } from "react";
 
-import { getApiData } from "../../services/api";
+import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 
@@ -10,7 +10,7 @@ export const TodayPage = () => {
 
   const getTodayGoalsData = async () => {
     try {
-      const response = await getApiData({ method: "GET", link: "/today" });
+      const response = await submitToApi({ method: "GET", link: "/today" });
       setGoals(response.body.goalsDueToday);
     } catch (error) {
       console.error("Error fetching goals due today:", error);
