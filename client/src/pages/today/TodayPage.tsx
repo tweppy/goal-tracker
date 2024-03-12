@@ -1,24 +1,17 @@
 // import "./style.scss";
-import { getApiData } from "../../services/api";
-import { ApiSubmission, Goal } from "../../interfaces";
-import { GoalCard } from "../../components/GoalCard/GoalCard";
-
 import { useEffect, useState } from "react";
+
+import { getApiData } from "../../services/api";
+import { Goal } from "../../interfaces";
+import { GoalCard } from "../../components/GoalCard/GoalCard";
 
 export const TodayPage = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
 
   const getTodayGoalsData = async () => {
-    const apiSubmissionData: ApiSubmission = {
-      method: "GET",
-      link: "/today",
-    };
-
     try {
-      const response = await getApiData(apiSubmissionData);
-      const todayGoals = response.body.goalsDueToday;
-
-      setGoals(todayGoals);
+      const response = await getApiData({ method: "GET", link: "/today" });
+      setGoals(response.body.goalsDueToday);
     } catch (error) {
       console.error("Error fetching goals due today:", error);
     }
@@ -33,18 +26,10 @@ export const TodayPage = () => {
       <header className="today-page__header">
         <h1 className="today-page__title">Today</h1>
       </header>
-
       <section className="today-page__goals">
-        {goals.map(goal => {
-          return (
-            <GoalCard
-              key={goal.goalId}
-              id={goal.goalId}
-              title={goal.goalName}
-              desc={goal.description}
-            />
-          );
-        })}
+        {goals.map(goal => (
+          <GoalCard key={goal.goalId} {...goal} />
+        ))}
 
         {goals.length === 0 && <p className="empty">Nothing due today</p>}
       </section>
