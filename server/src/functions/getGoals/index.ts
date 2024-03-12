@@ -18,7 +18,7 @@ const getGoals = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
 
     const userId = event.requestContext.authorizer.userId;
 
-    const result = await findGoalsByUserId(userId, "goalsDb01");
+    const result = await findGoalsByUserId(userId, "goalsDb02");
 
     if (!result.Items) {
       return sendResponse(404, { success: false, message: `Failed to retrieve goals for userId: '${userId}'` });

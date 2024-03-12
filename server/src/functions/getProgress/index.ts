@@ -18,7 +18,7 @@ const getProgress = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
 
     const userId = event.requestContext.authorizer.userId;
 
-    const result = await findGoalsByUserId(userId, "completedGoalsDb01");
+    const result = await findGoalsByUserId(userId, "completedGoalsDb02");
 
     if (result.Items && result.Items.length === 0) {
       return sendResponse(404, { success: false, message: "No progress or completed goals found" });

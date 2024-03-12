@@ -38,11 +38,11 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
     }
 
     const params = {
-      TableName: "completedGoalsDb01",
-      KeyConditionExpression: "goalId = :goalId AND completionDate = :completionDate",
+      TableName: "completedGoalsDb02",
+      KeyConditionExpression: "goalId = :goalId AND completedOn = :completedOn",
       ExpressionAttributeValues: {
         ":goalId": goalId,
-        ":completionDate": todayDate,
+        ":completedOn": todayDate,
       },
     };
 
@@ -58,14 +58,14 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
     const newCompletedGoal: CompletedGoal = {
       goalId,
       userId,
-      completionDate: todayDate,
+      completedOn: todayDate,
       goalName: result.Item.goalName,
       description: result.Item.description,
     };
 
     await db
       .put({
-        TableName: "completedGoalsDb01",
+        TableName: "completedGoalsDb02",
         Item: newCompletedGoal,
       })
       .promise();

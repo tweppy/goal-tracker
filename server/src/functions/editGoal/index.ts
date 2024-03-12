@@ -44,7 +44,7 @@ const editGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
 
     await db
       .put({
-        TableName: "goalsDb01",
+        TableName: "goalsDb02",
         Item: updatedGoal,
       })
       .promise();
