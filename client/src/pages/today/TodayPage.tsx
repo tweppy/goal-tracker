@@ -1,4 +1,5 @@
-// import "./style.scss";
+import "./style.scss";
+
 import { useEffect, useState } from "react";
 
 import { submitToApi } from "../../services/api";

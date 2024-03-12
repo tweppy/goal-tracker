@@ -1,3 +1,5 @@
+import "./style.scss";
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -7,12 +9,12 @@ import { getGoalData } from "../../utils/helpers";
 
 export const GoalViewPage = () => {
   const [goal, setGoal] = useState<Goal>();
-  
+
   const { id } = useParams();
 
   useEffect(() => {
     async function fetchData() {
-      const result = await getGoalData(id as string)
+      const result = await getGoalData(id as string);
       setGoal(result);
     }
     fetchData();

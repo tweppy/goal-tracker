@@ -1,3 +1,5 @@
+import "./style.scss";
+
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -19,10 +21,9 @@ export const TodayGoalViewPage = () => {
       await submitToApi({ method: "POST", link: "/today/" + id });
       setCompleted(true);
       setTimeout(() => {
-         navigate("/today");
-         // add some notif that goal was marked as completed
+        navigate("/today");
+        // add some notif that goal was marked as completed
       }, 2000);
-
     } catch (error) {
       console.error("Error marking goal as completed:", error);
     }
