@@ -41,7 +41,7 @@ export const submitToApi = async (data: ApiSubmission) => {
 
     const result = await response.json();
     console.log("RESULT:", result);
-    
+
     return result;
   } catch (error) {
     console.log(error);

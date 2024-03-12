@@ -1,9 +1,10 @@
-// import "./style.scss";
+import "./style.scss";
 
 import { useState } from "react";
-import { postUserToApi } from "../../services/api";
 import { ApiSubmission } from "../../interfaces";
 import { useNavigate } from "react-router-dom";
+
+import { postUserToApi } from "../../services/api";
 
 interface UserFormProps {
   heading: string;
