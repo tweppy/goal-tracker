@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
+import { GoalForm } from "../../components/GoalForm/GoalForm";
 
 export const GoalsPage = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -34,6 +35,8 @@ export const GoalsPage = () => {
 
         {goals.length === 0 && <p className="empty">No goals found</p>}
       </section>
+
+      <GoalForm />
     </main>
   );
 };
