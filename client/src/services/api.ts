@@ -1,7 +1,8 @@
 import { ApiSubmission } from "../interfaces";
 
+const baseUrl = import.meta.env.VITE_BASE_URL;
+
 export const postUserToApi = async (data: ApiSubmission) => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
 
   try {
     const response = await fetch(baseUrl + data.link, {
@@ -27,7 +28,6 @@ export const postUserToApi = async (data: ApiSubmission) => {
 };
 
 export const submitToApi = async (data: ApiSubmission) => {
-  const baseUrl = import.meta.env.VITE_BASE_URL;
   const token = localStorage.getItem("token");
 
   try {
@@ -48,24 +48,25 @@ export const submitToApi = async (data: ApiSubmission) => {
   }
 };
 
-// export const apiCall = async (data: object, method: string, link: string) => {
-//   const token = localStorage.getItem("token");
+export const submitBodyToApi = async (data: ApiSubmission) => {
+  const token = localStorage.getItem("token");
 
-//   try {
-//     const response = await fetch(import.meta.env.VITE_BASE_URL + link, {
-//       method: method,
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${token}`,
-//       },
-//       body: JSON.stringify(data),
-//     });
+  try {
+    const response = await fetch(baseUrl + data.link, {
+      method: data.method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data.data),
+    });
 
-//     const result = await response.json();
-//     console.log("RESULT:", result);
+    const result = await response.json();
+    console.log("RESULT:", result);
 
-//     return result;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
+    return result;
+  } catch (error) {
+    console.log(data)
+    console.log(error);
+  }
+};
