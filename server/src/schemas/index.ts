@@ -2,7 +2,10 @@ import Joi from "joi";
 
 export const userSchema = Joi.object({
   username: Joi.string().min(3).required(),
-  email: Joi.string().email({ tlds: { allow: false } }).required().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .required()
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
   password: Joi.string().min(8).required(),
 });
 
@@ -13,7 +16,7 @@ export const loginSchema = Joi.object({
 
 export const goalSchema = Joi.object({
   goalName: Joi.string().min(2).required(),
-  description: Joi.string().min(2).optional(),
+  description: Joi.string().min(2).optional().allow(""),
   dueDate: Joi.when("repeatType", {
     is: Joi.string().valid("none"),
     then: Joi.string()
