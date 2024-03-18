@@ -45,7 +45,7 @@ export interface Goal {
   description?: string;
   dueDate: string;
   repeatType: string;
-  repeatDay: number[] | string;
+  repeatDay: number[];
 }
 
 export interface CompletedGoal {
