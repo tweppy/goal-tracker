@@ -9,9 +9,11 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => {
+  const token = localStorage.getItem("token");
+
   return (
     <div className="layout">
-      <Navbar />
+      {token && <Navbar />}
       {children}
     </div>
   );
