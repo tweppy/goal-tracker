@@ -27,7 +27,7 @@ export const goalSchema = Joi.object({
   repeatType: Joi.string().valid("daily", "weekly", "weekdays", "weekends", "none").required(),
   repeatDay: Joi.when("repeatType", {
     is: Joi.string().valid("none"),
-    then: Joi.string().valid("none").required(),
+    then: Joi.array().items(Joi.number().valid()).required(),
   })
     .when("repeatType", {
       is: Joi.string().valid("daily"),
