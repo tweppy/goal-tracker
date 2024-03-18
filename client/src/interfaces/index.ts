@@ -11,6 +11,11 @@ export interface User {
   password: string;
 }
 
+export interface UserCredentials {
+  username: string;
+  password: string;
+}
+
 export interface Goal {
   goalId: string;
   userId: string;

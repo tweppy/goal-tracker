@@ -1,10 +1,11 @@
 import "./style.scss";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import navIconOpen from "../../assets/navicon-open.svg";
 import navIconClose from "../../assets/navicon-close.svg";
+import { useAuth } from "../../auth/AuthContext";
 
 const links = [
   { title: "Home", url: "/" },
@@ -14,7 +15,14 @@ const links = [
 ];
 
 export const Navbar = () => {
-  const [isOpen, setIsOpen] = useState<boolean>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -35,6 +43,7 @@ export const Navbar = () => {
             }
           </li>
         ))}
+        <button onClick={handleLogout}>logout</button>
       </ul>
     </nav>
   );

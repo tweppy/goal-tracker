@@ -1,25 +1,14 @@
 import "./style.scss";
 
 import { useState } from "react";
-import { ApiSubmission } from "../../interfaces";
 import { useNavigate } from "react-router-dom";
 
+import { ApiSubmission } from "../../interfaces";
+import { useAuth } from "../../auth/AuthContext";
 import { postUserToApi } from "../../services/api";
 
 interface UserFormProps {
   heading: string;
-}
-
-interface UserFormData {
-  username: string;
-  password: string;
-  email?: string;
-}
-
-interface UserSubmitParams {
-  currentPath: string;
-  userInputData: UserFormData;
-  redirectLink: string;
 }
 
 export const UserForm = ({ heading }: UserFormProps) => {
@@ -29,42 +18,34 @@ export const UserForm = ({ heading }: UserFormProps) => {
 
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    const userInputData: UserFormData = {
-      username,
-      password,
-    };
+  const { login } = useAuth();
 
-    await handleSubmit({ currentPath: "/login", userInputData, redirectLink: "/today" });
+  const handleLogin = async () => {
+    login({ username, password });
+    navigate("/today");
   };
 
   const handleSignup = async () => {
-    const userInputData: UserFormData = {
-      username,
-      password,
-      email,
-    };
-
-    await handleSubmit({ currentPath: "/signup", userInputData, redirectLink: "/login" });
-  };
-
-  const handleSubmit = async ({ currentPath, userInputData, redirectLink }: UserSubmitParams) => {
     const apiSubmissionData: ApiSubmission = {
-      data: userInputData,
+      data: {
+        username,
+        password,
+        email,
+      },
       method: "POST",
-      link: currentPath,
+      link: "/signup",
     };
 
     const response = await postUserToApi(apiSubmissionData);
 
     if (response.success === true) {
-      console.log("Successful");
+      console.log("User signed up");
       setUsername("");
       setPassword("");
       setEmail("");
-      navigate(redirectLink);
+      navigate("/");
     } else {
-      console.log("Failed:", response.message);
+      console.log("Signup failed");
     }
   };
 
