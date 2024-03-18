@@ -1,7 +1,14 @@
-import React from 'react'
+import "./style.scss";
+
+import { Layout } from "../../components/Layout/Layout";
 
 export const HomePage = () => {
   return (
-    <div>HomePage</div>
-  )
-}
+    <Layout>
+      <main className="home-page">
+        <button>login</button>
+        <button>signup</button>
+      </main>
+    </Layout>
+  );
+};

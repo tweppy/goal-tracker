@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { submitToApi } from "../../services/api";
 import { CompletedGoal } from "../../interfaces";
 import { ProgressCard } from "../../components/ProgressCard/ProgressCard";
+import { Layout } from "../../components/Layout/Layout";
 
 export const ProgressGoalViewPage = () => {
   const [progressGoal, setProgressGoal] = useState<CompletedGoal[]>([]);
@@ -27,14 +28,16 @@ export const ProgressGoalViewPage = () => {
   }, []);
 
   return (
-    <main className="progress-goal-page">
-      <section className="progress-goal-page__wrapper">
-        {progressGoal.length > 0 ? (
-          <ProgressCard {...progressGoal[0]} completedOn={progressGoal} showDetails={true} />
-        ) : (
-          <p className="empty">No progress found for this goal</p>
-        )}
-      </section>
-    </main>
+    <Layout>
+      <main className="progress-goal-page">
+        <section className="progress-goal-page__wrapper">
+          {progressGoal.length > 0 ? (
+            <ProgressCard {...progressGoal[0]} completedOn={progressGoal} showDetails={true} />
+          ) : (
+            <p className="empty">No progress found for this goal</p>
+          )}
+        </section>
+      </main>
+    </Layout>
   );
 };
