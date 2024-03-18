@@ -17,13 +17,13 @@ export interface UserCredentials {
 }
 
 export interface Goal {
-  goalId: string;
-  userId: string;
+  goalId?: string;
+  userId?: string;
   goalName: string;
   description?: string;
   dueDate: string;
   repeatType: string;
-  repeatDay: number[] | string;
+  repeatDay: number[];
 }
 
 export interface CompletedGoal {

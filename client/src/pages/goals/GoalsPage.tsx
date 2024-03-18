@@ -2,7 +2,7 @@ import "./style.scss";
 
 import { useEffect, useState } from "react";
 
-import { submitToApi } from "../../services/api";
+import { submitBodyToApi, submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 import { GoalForm } from "../../components/GoalForm/GoalForm";
@@ -24,6 +24,11 @@ export const GoalsPage = () => {
     getUserGoals();
   }, []);
 
+  const handleCreate = async (goal: Goal) => {
+    await submitBodyToApi({ data: goal, method: "POST", link: '/goals' });
+    console.log("Created goal:", goal);
+  };
+
   return (
     <Layout>
       <main className="goals-page">
@@ -32,13 +37,18 @@ export const GoalsPage = () => {
         </header>
         <section className="goals-page__goals">
           {goals.map(goal => (
-            <GoalCard key={goal.goalId} {...goal} />
+            <GoalCard
+              key={goal.goalId}
+              goalId={goal.goalId || ""}
+              userId={goal.userId || ""}
+              {...goal}
+            />
           ))}
 
           {goals.length === 0 && <p className="empty">No goals found</p>}
         </section>
 
-        <GoalForm />
+        <GoalForm onSubmit={handleCreate} />
       </main>
     </Layout>
   );

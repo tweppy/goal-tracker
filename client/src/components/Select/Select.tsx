@@ -1,9 +1,11 @@
 export interface SelectProps {
   id: string;
+  name: string;
+  value?: number | string;
   label: string;
   disabled?: boolean;
   selectOptions: SelectOptionProps[];
-  onChange: (option: SelectOptionProps) => void;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export interface SelectOptionProps {
@@ -14,20 +16,13 @@ export interface SelectOptionProps {
   dayValue?: number[];
 }
 
-export const Select = ({ id, label, selectOptions, onChange, disabled }: SelectProps) => {
+export const Select = ({ id, name, value, label, disabled, selectOptions, onChange }: SelectProps) => {
   return (
     <fieldset>
       <label className="label" htmlFor={id}>
         {label}
       </label>
-      <select
-        id={id}
-        className="select"
-        disabled={disabled}
-        onChange={e => {
-          onChange && onChange(selectOptions[e.currentTarget.selectedIndex]);
-        }}
-      >
+      <select id={id} name={name} className="select" disabled={disabled} onChange={onChange} value={value}>
         {selectOptions.map((option: SelectOptionProps, index: number) => (
           <option key={index} value={option.value} hidden={option.hidden}>
             {option.text}

@@ -1,108 +1,136 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import "./style.scss";
 
-import { useState } from "react";
-import { Select } from "../Select/Select";
-import { submitBodyToApi } from "../../services/api";
+import { useEffect, useState } from "react";
+
 import { repeatDayOptions, repeatTypeOptions } from "./data/options";
+import { Goal } from "../../interfaces";
+import { Select } from "../Select/Select";
 import { Input } from "../Input/Input";
 
-export const GoalForm = () => {
-  const [goalName, setGoalName] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [dueDate, setDueDate] = useState<string>("");
-  const [repeatType, setRepeatType] = useState<string>("");
-  const [repeatDay, setRepeatDay] = useState<number[]>([]);
+export interface GoalFormProps {
+  onSubmit: (goal: Goal) => void;
+  initialGoal?: Goal;
+}
+
+export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
   const [showDate, setShowDate] = useState<boolean>(false);
+  const [goalData, setGoalData] = useState<Goal>({
+    goalName: "",
+    description: "",
+    dueDate: "",
+    repeatType: "",
+    repeatDay: [],
+  });
 
-  const createGoal = async () => {
+  useEffect(() => {
+    if (initialGoal) {
+      const { userId, goalId, ...goalBodyWithoutIds } = initialGoal;
+      setGoalData(goalBodyWithoutIds);
+    }
+  }, [initialGoal]);
+
+  console.log(goalData);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    console.log(goalData);
+
+    let repeatDayArray: number[] = [...(goalData.repeatDay ?? [])];
+
+    if (name === "repeatType" && value !== "weekly") {
+      const selectedOption = repeatTypeOptions.find(option => option.value === value);
+      repeatDayArray = selectedOption ? selectedOption.dayValue || [] : [];
+    } else if (name === "repeatDay" && goalData.repeatType === "weekly") {
+      repeatDayArray = [parseInt(value)];
+    }
+
+    if (showDate) {
+      goalData.dueDate = value;
+      goalData.repeatType = "none";
+      repeatDayArray = [];
+    } else {
+      goalData.dueDate = "none";
+    }
+
+    const updatedGoalData = {
+      ...goalData,
+      [name]: value,
+      repeatDay: repeatDayArray,
+    };
+
+    setGoalData(updatedGoalData);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     try {
-      let repeatDayArray: number[] = [];
-
-      if (repeatType === "weekly") {
-        repeatDayArray = repeatDay;
-      } else {
-        const selectedOption = repeatTypeOptions.find(option => option.value === repeatType);
-        repeatDayArray = selectedOption ? selectedOption.dayValue || [] : [];
-      }
-
-      const dataToSend = {
-        goalName,
-        description,
-        dueDate: !showDate ? "none" : dueDate,
-        repeatDay: repeatDayArray,
-        repeatType,
-      };
-
-      const response = await submitBodyToApi({ data: dataToSend, method: "POST", link: "/goals" });
-
-      if (response.success) {
-        console.log("Success");
-        setGoalName("");
-        setDescription("");
-        setDueDate("");
-        setRepeatDay([]);
-        setRepeatType("");
-      } else {
-        console.log("Failed:", response.message);
-      }
+      e.preventDefault();
+      onSubmit(goalData);
+      setTimeout(() => {
+        window.location.reload();
+        // ughg
+      }, 2000);
     } catch (error) {
       console.error("Error creating goal:", error);
     }
   };
 
   return (
-    <section className="login-form">
+    <form className="goal-form" onSubmit={handleSubmit}>
       <Input
         type="text"
         id="goalName"
+        name="goalName"
         placeholder="Goal name"
-        value={goalName}
-        onChange={goalName => {
-          setGoalName(goalName);
-        }}
+        value={goalData.goalName}
+        onChange={handleChange}
       />
 
       <Input
         type="text"
         id="description"
+        name="description"
         placeholder="Description"
-        value={description}
-        onChange={description => {
-          setDescription(description);
-        }}
+        value={goalData.description || ""}
+        onChange={handleChange}
       />
 
-      <button onClick={() => setShowDate(prevShowDate => !prevShowDate)}>
+      <button type="button" onClick={() => setShowDate(prevShowDate => !prevShowDate)}>
         {showDate ? "Hide Due Date" : "Select Due Date"}
       </button>
 
       {showDate && (
-        <input
+        <Input
           type="date"
-          name="dueDate"
           id="dueDate"
-          value={dueDate}
-          onChange={e => setDueDate(e.target.value)}
+          name="dueDate"
+          value={goalData.dueDate}
+          onChange={handleChange}
         />
       )}
 
       <Select
         id="repeatType"
+        name="repeatType"
         label="Repeat Type"
+        value={goalData.repeatType || 8}
         disabled={showDate}
         selectOptions={repeatTypeOptions}
-        onChange={option => setRepeatType(option.value as string)}
+        onChange={handleChange}
       />
 
       <Select
         id="repeatDay"
+        name="repeatDay"
         label="Repeat Day"
-        disabled={repeatType !== "weekly" || showDate}
+        value={goalData.repeatDay?.[0] || ""}
+        disabled={goalData.repeatType !== "weekly" || showDate}
         selectOptions={repeatDayOptions}
-        onChange={option => setRepeatDay([Number(option.value)])}
+        onChange={handleChange}
       />
 
-      <button onClick={createGoal}>submit</button>
-    </section>
+      <button type="submit">{initialGoal ? "Update Goal" : "Create Goal"}</button>
+    </form>
   );
 };
