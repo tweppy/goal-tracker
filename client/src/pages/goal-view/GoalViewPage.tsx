@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 import { Goal } from "../../interfaces";
 import { getGoalData } from "../../utils/helpers";
+import { Layout } from "../../components/Layout/Layout";
 
 export const GoalViewPage = () => {
   const [goal, setGoal] = useState<Goal>();
@@ -21,11 +22,13 @@ export const GoalViewPage = () => {
   }, [id]);
 
   return (
-    <main className="goal-page">
-      <header className="goal-page__header">
-        <h1 className="goal-page__title">Goal</h1>
-      </header>
-      <section>{goal && <GoalCard key={goal.goalId} {...goal} />}</section>
-    </main>
+    <Layout>
+      <main className="goal-page">
+        <header className="goal-page__header">
+          <h1 className="goal-page__title">Goal</h1>
+        </header>
+        <section>{goal && <GoalCard key={goal.goalId} {...goal} />}</section>
+      </main>
+    </Layout>
   );
 };

@@ -7,6 +7,7 @@ import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 import { getGoalData } from "../../utils/helpers";
+import { Layout } from "../../components/Layout/Layout";
 
 export const TodayGoalViewPage = () => {
   const [goal, setGoal] = useState<Goal>();
@@ -32,17 +33,21 @@ export const TodayGoalViewPage = () => {
   useEffect(() => {
     async function fetchData() {
       const result = await getGoalData(id as string);
-      setGoal(result);
+      if (result) {
+        setGoal(result);
+      }
     }
     fetchData();
   }, [id]);
 
   return (
-    <main className="today-goal-page">
-      <section>{goal && <GoalCard key={goal.goalId} {...goal} />}</section>
-      <button disabled={completed} onClick={handleCompleteGoal}>
-        mark as completed
-      </button>
-    </main>
+    <Layout>
+      <main className="today-goal-page">
+        <section>{goal && <GoalCard key={goal.goalId} {...goal} />}</section>
+        <button disabled={completed} onClick={handleCompleteGoal}>
+          mark as completed
+        </button>
+      </main>
+    </Layout>
   );
 };
