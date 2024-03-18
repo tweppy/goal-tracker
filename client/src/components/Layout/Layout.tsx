@@ -3,19 +3,17 @@ import "./style.scss";
 import { ReactNode } from "react";
 
 import { Navbar } from "../Navbar/Navbar";
-import { useAuth } from "../../auth/AuthContext";
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export const Layout = ({ children }: LayoutProps) => {
-  const { isAuthenticated } = useAuth();
-  console.log(isAuthenticated);
+  const token = localStorage.getItem("token");
 
   return (
     <div className="layout">
-      {isAuthenticated && <Navbar />}
+      {token && <Navbar />}
       {children}
     </div>
   );
