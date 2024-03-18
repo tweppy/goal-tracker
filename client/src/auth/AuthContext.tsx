@@ -41,8 +41,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         localStorage.setItem("token", token);
         setIsAuthenticated(true);
-
-        window.location.replace("/");
       } else {
         const error = await response.json();
         console.log("Login failed", error.message);

@@ -22,6 +22,7 @@ export const UserForm = ({ heading }: UserFormProps) => {
 
   const handleLogin = async () => {
     login({ username, password });
+    navigate("/today");
   };
 
   const handleSignup = async () => {
