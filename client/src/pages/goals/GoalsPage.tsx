@@ -8,16 +8,20 @@ import { GoalCard } from "../../components/GoalCard/GoalCard";
 import { GoalForm } from "../../components/GoalForm/GoalForm";
 import { Layout } from "../../components/Layout/Layout";
 import { notifyError, notifySuccess } from "../../utils/notifications";
+import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
 
 export const GoalsPage = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
+    const [loading, setLoading] = useState(true);
 
   const getUserGoals = async () => {
     try {
       const response = await submitToApi({ method: "GET", link: "/goals" });
       setGoals(response.body.goals);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching goals:", error);
+      setLoading(false);
     }
   };
 
@@ -37,7 +41,7 @@ export const GoalsPage = () => {
     }
   };
 
-  return (
+  return goals && !loading ? (
     <Layout>
       <main className="goals-page">
         <header className="goals-page__header">
@@ -59,5 +63,7 @@ export const GoalsPage = () => {
         <GoalForm onSubmit={handleCreate} />
       </main>
     </Layout>
+  ) : (
+    <LoadingSpinner />
   );
 };

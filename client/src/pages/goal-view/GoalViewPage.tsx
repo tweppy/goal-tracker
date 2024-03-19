@@ -10,10 +10,12 @@ import { Layout } from "../../components/Layout/Layout";
 import { submitBodyToApi, submitToApi } from "../../services/api";
 import { GoalForm } from "../../components/GoalForm/GoalForm";
 import { notifyError, notifySuccess } from "../../utils/notifications";
+import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
 
 export const GoalViewPage = () => {
   const [goal, setGoal] = useState<Goal>();
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
 
   const { id } = useParams();
 
@@ -23,6 +25,7 @@ export const GoalViewPage = () => {
     async function fetchData() {
       const result = await getGoalData(id as string);
       setGoal(result);
+      setLoading(false);
     }
     fetchData();
   }, [id]);
@@ -53,7 +56,7 @@ export const GoalViewPage = () => {
     }
   };
 
-  return (
+  return goal && !loading ? (
     <Layout>
       <main className="goal-page">
         <header className="goal-page__header">
@@ -78,5 +81,7 @@ export const GoalViewPage = () => {
         </section>
       </main>
     </Layout>
+  ) : (
+    <LoadingSpinner />
   );
 };

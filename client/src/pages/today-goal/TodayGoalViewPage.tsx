@@ -8,10 +8,13 @@ import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 import { getGoalData } from "../../utils/helpers";
 import { Layout } from "../../components/Layout/Layout";
+import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
+import { notifyError, notifySuccess } from "../../utils/notifications";
 
 export const TodayGoalViewPage = () => {
   const [goal, setGoal] = useState<Goal>();
   const [completed, setCompleted] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -19,14 +22,15 @@ export const TodayGoalViewPage = () => {
 
   const handleCompleteGoal = async () => {
     try {
-      await submitToApi({ method: "POST", link: "/today/" + id });
+      const result = await submitToApi({ method: "POST", link: "/today/" + id });
       setCompleted(true);
+      notifySuccess(result.message);
       setTimeout(() => {
         navigate("/today");
-        // add some notif that goal was marked as completed
       }, 2000);
     } catch (error) {
-      console.error("Error marking goal as completed:", error);
+      notifyError("Error marking goal as completed");
+      console.error("Error:", error);
     }
   };
 
@@ -35,19 +39,24 @@ export const TodayGoalViewPage = () => {
       const result = await getGoalData(id as string);
       if (result) {
         setGoal(result);
+        setLoading(false);
       }
     }
     fetchData();
   }, [id]);
 
-  return (
+  return goal && !loading ? (
     <Layout>
       <main className="today-goal-page">
-        <section>{goal && <GoalCard key={goal.goalId} {...goal} />}</section>
+        <section>
+          {goal && <GoalCard key={goal.goalId} {...goal} goalId={goal.goalId || ""} />}
+        </section>
         <button disabled={completed} onClick={handleCompleteGoal}>
           mark as completed
         </button>
       </main>
     </Layout>
+  ) : (
+    <LoadingSpinner />
   );
 };
