@@ -9,6 +9,7 @@ import { getGoalData } from "../../utils/helpers";
 import { Layout } from "../../components/Layout/Layout";
 import { submitBodyToApi, submitToApi } from "../../services/api";
 import { GoalForm } from "../../components/GoalForm/GoalForm";
+import { notifyError, notifySuccess } from "../../utils/notifications";
 
 export const GoalViewPage = () => {
   const [goal, setGoal] = useState<Goal>();
@@ -30,20 +31,26 @@ export const GoalViewPage = () => {
     const result = await submitToApi({ method: "DELETE", link: `/goals/${id}` });
 
     if (result.success === true) {
-      console.log("goal removed");
+      notifySuccess(result.message);
       setTimeout(() => {
         navigate("/goals");
-        // add some notif that goal was marked as completed
       }, 2000);
     } else {
-      console.log("Failed to remove goal");
+      notifyError(result.message);
     }
   };
 
-  // add some notif that goal was marked as completed
   const handleEdit = async (goal: Goal) => {
-    await submitBodyToApi({ data: goal, method: "PUT", link: `/goals/${id}` });
-    console.log("Submitted edited goal:", goal);
+    const result = await submitBodyToApi({ data: goal, method: "PUT", link: `/goals/${id}` });
+
+    if (result.success === true) {
+      notifySuccess(result.message);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      notifyError("Invalid goal form");
+    }
   };
 
   return (
@@ -61,11 +68,11 @@ export const GoalViewPage = () => {
               {...goal}
             />
           )}
-          <button onClick={handleDelete}>delete goal</button>
+          <button onClick={handleDelete}>Delete goal</button>
         </section>
 
         <section>
-          <button onClick={() => setShowEditForm(!showEditForm)}>edit goal</button>
+          <button onClick={() => setShowEditForm(!showEditForm)}>Edit goal</button>
 
           {showEditForm && <GoalForm onSubmit={handleEdit} initialGoal={goal} />}
         </section>

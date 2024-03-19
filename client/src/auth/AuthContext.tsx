@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useContext } from "react";
 import { UserCredentials } from "../interfaces";
+import { notifyError, notifySuccess } from "../utils/notifications";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -41,8 +42,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
         localStorage.setItem("token", token);
         setIsAuthenticated(true);
+        notifySuccess(result.message);
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000);
       } else {
         const error = await response.json();
+        notifyError(error.message);
         console.log("Login failed", error.message);
       }
     } catch (error) {

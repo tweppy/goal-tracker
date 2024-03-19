@@ -7,6 +7,7 @@ import { Goal } from "../../interfaces";
 import { GoalCard } from "../../components/GoalCard/GoalCard";
 import { GoalForm } from "../../components/GoalForm/GoalForm";
 import { Layout } from "../../components/Layout/Layout";
+import { notifyError, notifySuccess } from "../../utils/notifications";
 
 export const GoalsPage = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
@@ -25,8 +26,15 @@ export const GoalsPage = () => {
   }, []);
 
   const handleCreate = async (goal: Goal) => {
-    await submitBodyToApi({ data: goal, method: "POST", link: '/goals' });
-    console.log("Created goal:", goal);
+    const result = await submitBodyToApi({ data: goal, method: "POST", link: "/goals" });
+    if (result.success === true) {
+      notifySuccess(result.message);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } else {
+      notifyError('Invalid goal form');
+    }
   };
 
   return (

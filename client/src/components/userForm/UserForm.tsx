@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ApiSubmission } from "../../interfaces";
 import { useAuth } from "../../auth/AuthContext";
 import { postUserToApi } from "../../services/api";
+import { notifyError, notifySuccess } from "../../utils/notifications";
 
 interface UserFormProps {
   heading: string;
@@ -22,7 +23,6 @@ export const UserForm = ({ heading }: UserFormProps) => {
 
   const handleLogin = async () => {
     login({ username, password });
-    navigate("/today");
   };
 
   const handleSignup = async () => {
@@ -39,13 +39,17 @@ export const UserForm = ({ heading }: UserFormProps) => {
     const response = await postUserToApi(apiSubmissionData);
 
     if (response.success === true) {
-      console.log("User signed up");
       setUsername("");
       setPassword("");
       setEmail("");
-      navigate("/");
+
+      notifySuccess(response.message);
+
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     } else {
-      console.log("Signup failed");
+      notifyError(response.message);
     }
   };
 
@@ -75,8 +79,16 @@ export const UserForm = ({ heading }: UserFormProps) => {
           onChange={e => setEmail(e.target.value)}
         />
       )}
-      {location.pathname === "/login" && <button onClick={handleLogin}>Login</button>}
-      {location.pathname === "/signup" && <button onClick={handleSignup}>Signup</button>}
+      {location.pathname === "/login" && (
+        <button disabled={!username || !password} onClick={handleLogin}>
+          Login
+        </button>
+      )}
+      {location.pathname === "/signup" && (
+        <button disabled={!username || !password || !email} onClick={handleSignup}>
+          Signup
+        </button>
+      )}
     </section>
   );
 };
