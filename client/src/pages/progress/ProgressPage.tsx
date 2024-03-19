@@ -6,18 +6,22 @@ import { submitToApi } from "../../services/api";
 import { CompletedGoal } from "../../interfaces";
 import { ProgressCard } from "../../components/ProgressCard/ProgressCard";
 import { Layout } from "../../components/Layout/Layout";
+import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
 
 export const ProgressPage = () => {
   const [progressGoals, setProgressGoals] = useState<CompletedGoal[]>([]);
+   const [loading, setLoading] = useState(true);
 
   const getUserGoalsProgress = async () => {
     try {
       const response = await submitToApi({ method: "GET", link: "/progress" });
       if (response) {
         setProgressGoals(response.body.progress);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching goals:", error);
+      setLoading(false);
     }
   };
 
@@ -34,7 +38,7 @@ export const ProgressPage = () => {
     groupedProgressGoals[goal.goalId].push(goal);
   });
 
-  return (
+  return progressGoals && !loading ? (
     <Layout>
       <main className="progress-page">
         <header className="progress-page__header">
@@ -50,5 +54,7 @@ export const ProgressPage = () => {
         </section>
       </main>
     </Layout>
+  ) : (
+    <LoadingSpinner />
   );
 };
