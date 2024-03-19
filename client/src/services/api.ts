@@ -19,7 +19,9 @@ export const postUserToApi = async (data: ApiSubmission) => {
       return result;
     } else {
       const error = await response.json();
-      console.log("Failed", error.message);
+      console.log("Failed:", error.message);
+
+      return error;
     }
   } catch (error) {
     console.log(error);

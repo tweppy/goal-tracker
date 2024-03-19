@@ -40,7 +40,7 @@ export const repeatTypeOptions: SelectOptionProps[] = [
   {
     hidden: true,
     text: "Select when to repeat",
-    value: 8,
+    value: "none",
   },
   {
     text: "daily",
@@ -60,9 +60,5 @@ export const repeatTypeOptions: SelectOptionProps[] = [
     text: "weekends",
     value: "weekends",
     dayValue: [0, 6],
-  },
-  {
-    text: "none",
-    value: "none",
   },
 ];

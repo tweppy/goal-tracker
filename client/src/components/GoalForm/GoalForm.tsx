@@ -30,12 +30,8 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
     }
   }, [initialGoal]);
 
-  console.log(goalData);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-
-    console.log(goalData);
 
     let repeatDayArray: number[] = [...(goalData.repeatDay ?? [])];
 
@@ -67,10 +63,6 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
     try {
       e.preventDefault();
       onSubmit(goalData);
-      setTimeout(() => {
-        window.location.reload();
-        // ughg
-      }, 2000);
     } catch (error) {
       console.error("Error creating goal:", error);
     }
@@ -105,6 +97,7 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
           type="date"
           id="dueDate"
           name="dueDate"
+          disabled={!showDate}
           value={goalData.dueDate}
           onChange={handleChange}
         />
@@ -114,7 +107,7 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
         id="repeatType"
         name="repeatType"
         label="Repeat Type"
-        value={goalData.repeatType || 8}
+        value={goalData.repeatType || "none"}
         disabled={showDate}
         selectOptions={repeatTypeOptions}
         onChange={handleChange}

@@ -1,12 +1,19 @@
 import Joi from "joi";
 
 export const userSchema = Joi.object({
-  username: Joi.string().min(3).required(),
+  username: Joi.string().min(3).required().messages({
+    "string.pattern.base": "Username must contain 2 characters or more",
+  }),
   email: Joi.string()
     .email({ tlds: { allow: false } })
     .required()
-    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
-  password: Joi.string().min(8).required(),
+    .regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+    .messages({
+      "string.pattern.base": "Invalid email format",
+    }),
+  password: Joi.string().min(8).required().messages({
+    "string.pattern.base": "Password must contain 8 characters or more",
+  }),
 });
 
 export const loginSchema = Joi.object({
