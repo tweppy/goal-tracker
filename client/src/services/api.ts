@@ -1,6 +1,28 @@
+import { jwtDecode } from "jwt-decode";
+
 import { ApiSubmission } from "../interfaces";
 
 const baseUrl = import.meta.env.VITE_BASE_URL;
+
+export interface DecodedToken {
+  exp: number;
+}
+
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const decodedToken: DecodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+
+    if (decodedToken.exp < currentTime) {
+      localStorage.removeItem("token");
+      return true;
+    }
+    return false;
+  } catch (error) {
+    localStorage.removeItem("token");
+    return true;
+  }
+};
 
 export const postUserToApi = async (data: ApiSubmission) => {
   try {
