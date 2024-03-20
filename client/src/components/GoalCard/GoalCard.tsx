@@ -7,7 +7,6 @@ interface GoalCardProps {
   goalId: string;
   goalName: string;
   description?: string;
-  dueDate?: string;
   repeatType?: string;
   repeatDay?: number[] | string;
 }
@@ -16,7 +15,6 @@ export const GoalCard = ({
   goalId,
   goalName,
   description,
-  dueDate,
   repeatType,
   repeatDay,
 }: GoalCardProps) => {
@@ -48,7 +46,6 @@ export const GoalCard = ({
       {repeatType && repeatType !== "none" && (
         <p className="goal-card__repeatDay">Repeats: {goalRepeats()}</p>
       )}
-      {dueDate && dueDate !== "none" && <p className="goal__dueDate">Due: {dueDate}</p>}
     </section>
   );
 };

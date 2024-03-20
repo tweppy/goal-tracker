@@ -14,11 +14,9 @@ export interface GoalFormProps {
 }
 
 export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
-  const [showDate, setShowDate] = useState<boolean>(false);
   const [goalData, setGoalData] = useState<Goal>({
     goalName: "",
     description: "",
-    dueDate: "",
     repeatType: "",
     repeatDay: [],
   });
@@ -40,14 +38,6 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
       repeatDayArray = selectedOption ? selectedOption.dayValue || [] : [];
     } else if (name === "repeatDay" && goalData.repeatType === "weekly") {
       repeatDayArray = [parseInt(value)];
-    }
-
-    if (showDate) {
-      goalData.dueDate = value;
-      goalData.repeatType = "none";
-      repeatDayArray = [];
-    } else {
-      goalData.dueDate = "none";
     }
 
     const updatedGoalData = {
@@ -88,27 +78,11 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
         onChange={handleChange}
       />
 
-      <button type="button" onClick={() => setShowDate(prevShowDate => !prevShowDate)}>
-        {showDate ? "Hide Due Date" : "Select Due Date"}
-      </button>
-
-      {showDate && (
-        <Input
-          type="date"
-          id="dueDate"
-          name="dueDate"
-          disabled={!showDate}
-          value={goalData.dueDate}
-          onChange={handleChange}
-        />
-      )}
-
       <Select
         id="repeatType"
         name="repeatType"
         label="Repeat Type"
         value={goalData.repeatType || "none"}
-        disabled={showDate}
         selectOptions={repeatTypeOptions}
         onChange={handleChange}
       />
@@ -118,7 +92,7 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
         name="repeatDay"
         label="Repeat Day"
         value={goalData.repeatDay?.[0] || ""}
-        disabled={goalData.repeatType !== "weekly" || showDate}
+        disabled={goalData.repeatType !== "weekly"}
         selectOptions={repeatDayOptions}
         onChange={handleChange}
       />
