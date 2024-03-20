@@ -43,7 +43,6 @@ export interface Goal {
   userId: string;
   goalName: string;
   description?: string;
-  dueDate: string;
   repeatType: string;
   repeatDay: number[];
 }

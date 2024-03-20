@@ -24,10 +24,9 @@ const getToday = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRes
 
     const params = {
       TableName: "goalsDb02",
-      FilterExpression: "userId = :userId AND (dueDate = :dueDate OR contains(repeatDay, :repeatDay))",
+      FilterExpression: "userId = :userId AND contains(repeatDay, :repeatDay)",
       ExpressionAttributeValues: {
         ":userId": userId,
-        ":dueDate": todayDate,
         ":repeatDay": todayNum,
       },
     };

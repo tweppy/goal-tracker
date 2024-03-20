@@ -24,13 +24,6 @@ export const loginSchema = Joi.object({
 export const goalSchema = Joi.object({
   goalName: Joi.string().min(2).required(),
   description: Joi.string().min(2).optional().allow(""),
-  dueDate: Joi.when("repeatType", {
-    is: Joi.string().valid("none"),
-    then: Joi.string()
-      .required()
-      .regex(/^\d{4}-\d{2}-\d{2}$/),
-    otherwise: Joi.string().valid("none").required(),
-  }),
   repeatType: Joi.string().valid("daily", "weekly", "weekdays", "weekends", "none").required(),
   repeatDay: Joi.when("repeatType", {
     is: Joi.string().valid("none"),
