@@ -1,0 +1,43 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+@mixin base {
+  align-self: stretch;
+  width: 100%;
+  padding: var.$paddingMd;
+  border-radius: var.$radiusXL;
+  border: none;
+
+  @include font.fontSizeMedium;
+  color: color.$white;
+  line-height: 100%;
+
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
+
+  &:active {
+    filter: brightness(0.8);
+  }
+}
+
+button {
+  &.btn {
+    &__default {
+      @include base;
+      background-color: color.$darkGray;
+    }
+
+    &__delete {
+      @include base;
+      background-color: color.$red;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.32;
+  }
+}
