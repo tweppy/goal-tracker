@@ -9,14 +9,16 @@ import { Button, ButtonType } from "../Button/Button";
 
 const links = [
   { title: "Home", url: "/" },
-  { title: "Goals", url: "/goals" },
   { title: "Today", url: "/today" },
+  { title: "Goals", url: "/goals" },
   { title: "Progress", url: "/progress" },
 ];
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
   const { logout } = useAuth();
+
   const navigate = useNavigate();
 
   const handleLogout = () => {

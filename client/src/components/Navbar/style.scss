@@ -3,9 +3,12 @@
 @use "../../styles/variables" as var;
 
 .navbar {
-  width: 100%;
-  z-index: 99;
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 17px);
+  z-index: 100;
+  background-color: inherit;
 
   .navicon {
     @include var.flexColumn;
@@ -40,6 +43,7 @@
   &.open {
     background-color: color.$purple;
     height: 100%;
+    width: 100%;
   }
 
   .menu {
