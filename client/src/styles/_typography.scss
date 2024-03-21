@@ -58,3 +58,10 @@ $baseFontSize: 16px;
   line-height: 100%;
   font-weight: 600;
 }
+
+@mixin fontPageHeader {
+  font-family: $baseFontFamily;
+  font-size: $baseFontSize * 2.5;
+  line-height: 100%;
+  font-weight: 800;
+}

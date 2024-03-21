@@ -1,0 +1,46 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+@mixin base {
+  width: 100%;
+}
+
+@mixin content {
+  max-width: 500px;
+  border: 1px solid green;
+}
+
+.layout {
+  &__default {
+    @include base;
+    background-color: color.$white;
+    padding-top: var.$paddingHuge;
+
+    .content {
+      @include content;
+      padding: var.$paddingHuge var.$paddingXL 0 var.$paddingXL;
+    }
+  }
+
+  &__fullScreen {
+    @include base;
+
+    .content {
+      @include content;
+    }
+  }
+
+  &__fullScreenNav {
+    @include base;
+    height: 100%;
+    @include var.flexColumn;
+
+    background-color: color.$purple;
+    .content {
+      @include content;
+      height: 100%;
+      padding: var.$paddingHuge var.$paddingXL 0 var.$paddingXL;
+    }
+  }
+}

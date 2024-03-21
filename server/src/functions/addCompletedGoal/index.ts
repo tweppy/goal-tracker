@@ -61,6 +61,7 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
       completedOn: todayDate,
       goalName: result.Item.goalName,
       description: result.Item.description,
+      repeatType: result.Item.repeatType,
     };
 
     await db
@@ -81,7 +82,4 @@ const addCompletedGoal = async (event: APIGatewayProxyEvent): Promise<APIGateway
   }
 };
 
-export const handler = middy(addCompletedGoal)
-  .use(httpEventNormalizer())
-  .use(validateToken)
-  .use(httpErrorHandler());
+export const handler = middy(addCompletedGoal).use(httpEventNormalizer()).use(validateToken).use(httpErrorHandler());

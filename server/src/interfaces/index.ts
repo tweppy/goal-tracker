@@ -53,4 +53,5 @@ export interface CompletedGoal {
   completedOn: string;
   goalName: string;
   description?: string;
+  repeatType: string;
 }
