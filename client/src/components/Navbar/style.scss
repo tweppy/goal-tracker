@@ -1,45 +1,91 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
 .navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: darkslateblue;
-
-  .navbar-links {
-    list-style: none;
-    display: flex;
-
-    &__link {
-      margin-right: 20px;
-      text-decoration: none;
-      color: #fff;
-    }
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(100% - 17px);
+  z-index: 100;
+  background-color: inherit;
 
   .navicon {
-    display: none;
+    @include var.flexColumn;
+    justify-content: space-between;
+    z-index: 3;
     cursor: pointer;
-  }
-}
+    padding: var.$paddingXL;
+    position: relative;
+    width: 30px;
+    height: 20px;
 
-@media screen and (max-width: 768px) {
-  .navbar {
-    .navicon {
-      display: block;
+    .line {
+      width: 100%;
+      height: 3px;
+      background-color: color.$darkGray;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  .navicon.active .line:nth-child(1) {
+    transform: rotate(-45deg) translate(-6px, 6px);
+  }
+
+  .navicon.active .line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .navicon.active .line:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
+
+  &.open {
+    background-color: color.$purple;
+    height: 100%;
+    width: 100%;
+  }
+
+  .menu {
+    @include var.flexColumn;
+    @include var.flexCenter;
+    margin-bottom: var.$paddingHuge;
+    padding: 0 var.$paddingXL;
+    z-index: 2;
+    display: none;
+    background-color: color.$purple;
+
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .links {
+      @include var.flexColumn;
+      @include var.flexCenter;
+      height: 100%;
+      padding-left: 0;
+      gap: var.$gapMd;
+      list-style: none;
+
+      &__link {
+        @include font.fontSizeHuge;
+        color: color.$white;
+        text-decoration: none;
+
+        &:hover {
+          filter: brightness(0.8);
+        }
+      }
     }
 
-    .navbar-links {
-      display: none;
-      flex-direction: column;
-      position: absolute;
-      top: 70px;
-      left: 0;
-      width: 100%;
-      background-color: rgb(122, 122, 182); //temporary
+    &.active {
+      display: flex;
+    }
 
-      &.active {
-        display: flex;
-      }
+    button {
+      margin-top: auto;
     }
   }
 }
