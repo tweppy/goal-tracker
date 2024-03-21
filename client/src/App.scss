@@ -1,9 +1,14 @@
+@use "./styles/variables" as var;
+@use "./styles/typography";
+@use "./styles/colors";
+
 body {
-  background-color: #000;
-  color: #fff;
+  background-color: #eee;
+  scroll-behavior: smooth;
 
   .App {
-    min-height: 100vh;
+    max-width: var.$mobileMaxWidth;
     box-sizing: border-box;
+    overflow: hidden;
   }
 }
