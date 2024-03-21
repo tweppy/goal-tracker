@@ -2,10 +2,10 @@ import "./style.scss";
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
-import navIconOpen from "../../assets/navicon-open.svg";
-import navIconClose from "../../assets/navicon-close.svg";
 import { useAuth } from "../../auth/AuthContext";
+import { Button, ButtonType } from "../Button/Button";
 
 const links = [
   { title: "Home", url: "/" },
@@ -29,22 +29,34 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="navbar">
-      <aside className="navicon" onClick={toggleMenu}>
-        <img src={isOpen ? navIconClose : navIconOpen} alt="nav icon" />
+    <nav className={`navbar ${isOpen ? "open" : ""}`}>
+      <aside onClick={toggleMenu} className={`navicon ${isOpen ? "active" : ""}`}>
+        <div className="line"></div>
+        <div className="line"></div>
+        <div className="line"></div>
       </aside>
-      <ul className={`navbar-links ${isOpen ? "active" : ""}`}>
-        {links.map((link, index) => (
-          <li key={index}>
-            {
-              <Link to={link.url} className="navbar-links__link">
-                {link.title}
-              </Link>
-            }
-          </li>
-        ))}
-        <button onClick={handleLogout}>logout</button>
-      </ul>
+      <motion.section
+        className={`menu ${isOpen ? "active" : ""}`}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isOpen ? 1 : 0 }}
+        transition={{ duration: 0.5 }}
+        exit={{ opacity: 0 }}
+      >
+        <ul className="links">
+          {links.map((link, index) => (
+            <li key={index}>
+              {
+                <Link to={link.url} className="links__link">
+                  {link.title}
+                </Link>
+              }
+            </li>
+          ))}
+        </ul>
+        <Button type={ButtonType.default} onClick={handleLogout}>
+          Logout
+        </Button>
+      </motion.section>
     </nav>
   );
 };
