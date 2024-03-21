@@ -29,6 +29,7 @@ export interface CompletedGoal {
   userId: string;
   goalId: string;
   goalName: string;
+  repeatType: string;
   description?: string;
   completedOn: string[];
 }
