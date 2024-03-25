@@ -1,7 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useContext } from "react";
+import { createContext, useContext } from "react";
 import { UserCredentials } from "../interfaces";
 import { notifyError, notifySuccess } from "../utils/notifications";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -10,18 +11,21 @@ interface AuthProviderProps {
 interface AuthContextProps {
   login: (user: UserCredentials) => void;
   logout: () => void;
-  isAuthenticated: boolean;
+  getUsername: () => string | null;
+}
+
+interface DecodedToken {
+  userId: string;
+  username: string;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
   login: () => {},
   logout: () => {},
-  isAuthenticated: false,
+  getUsername: () => null,
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
   const login = async (user: UserCredentials) => {
     const baseUrl = import.meta.env.VITE_BASE_URL;
 
@@ -41,7 +45,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const token = result.body.token;
 
         localStorage.setItem("token", token);
-        setIsAuthenticated(true);
         notifySuccess(result.message);
         setTimeout(() => {
           window.location.reload();
@@ -58,13 +61,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = () => {
     localStorage.removeItem("token");
-    setIsAuthenticated(false);
+  };
+
+  const getUsername = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken: DecodedToken = jwtDecode(token);
+      return decodedToken.username;
+    }
+    return null;
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={{ login, logout, getUsername }}>{children}</AuthContext.Provider>
   );
 };
 
