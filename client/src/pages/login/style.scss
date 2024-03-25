@@ -1,0 +1,25 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+.login-page {
+  @include var.flexColumn;
+  @include var.flexCenter;
+  height: 100%;
+
+  button {
+    margin-top: var.$marginXL;
+    margin-bottom: var.$margin;
+  }
+
+  .redirect {
+    @include font.fontSizeSmall;
+    color: color.$darkGray;
+
+    &__link {
+      text-decoration: none;
+      color: color.$purple;
+      font-weight: 700;
+    }
+  }
+}
