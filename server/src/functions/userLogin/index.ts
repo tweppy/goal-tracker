@@ -38,14 +38,14 @@ const userLogin = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyRe
       return sendResponse(400, { success: false, message: "Invalid password" });
     }
 
-    const token = jwt.sign({ userId: userData.userId }, process.env.JWT_SECRET || "default-value", {
+    const token = jwt.sign({ userId: userData.userId, username: userData.username }, process.env.JWT_SECRET || "default-value", {
       expiresIn: 21600,
     });
 
     return sendResponse(200, {
       success: true,
       message: `User ${username} successfully logged in!`,
-      body: { token, userId: userData.userId },
+      body: { token, userId: userData.userId, username: userData.username },
     });
   } catch (error) {
     console.log(error);
