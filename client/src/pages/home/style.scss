@@ -1,0 +1,32 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+.home-page {
+  height: 100%;
+
+  .home-view {
+    @include var.flexColumn;
+    @include var.flexCenter;
+    gap: var.$gapLg;
+    height: 100%;
+
+    .home-view__logo {
+      @include var.flexCenter;
+      @include var.flexColumn;
+      margin-bottom: var.$marginHuge;
+
+      .home-view__logo-text {
+        @include font.fontSizeNormal;
+        margin-top: var.$marginLg;
+      }
+    }
+
+    .home-view__buttons {
+      @include var.flexColumn;
+      width: 100%;
+      gap: var.$gapSm;
+      margin-bottom: var.$marginXL;
+    }
+  }
+}

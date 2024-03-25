@@ -40,6 +40,33 @@ const removeGoal = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
 
     await db.delete(params).promise();
 
+    const queryParams = {
+      TableName: "completedGoalsDb02",
+      KeyConditionExpression: "goalId = :goalId",
+      ExpressionAttributeValues: {
+        ":goalId": goalId,
+      },
+    };
+
+    const queryResult = await db.query(queryParams).promise();
+
+    if (!queryResult.Items || queryResult.Items.length === 0) {
+      console.log("No items found in completedGoalsDb02 with the specified goalId");
+    } else {
+      const deletePromises = queryResult.Items.map(async (item: any) => {
+        const deleteParams = {
+          TableName: "completedGoalsDb02",
+          Key: {
+            goalId: item.goalId,
+            completedOn: item.completedOn,
+          },
+        };
+        return db.delete(deleteParams).promise();
+      });
+
+      await Promise.all(deletePromises);
+    }
+
     return sendResponse(200, {
       success: true,
       message: "Goal removed successfully",
