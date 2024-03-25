@@ -1,0 +1,12 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+.progress-goal-page {
+  &__wrapper {
+    @include var.flexColumn;
+    @include var.flexCenter;
+    gap: var.$gapSm;
+    padding: var.$padding;
+  }
+}
