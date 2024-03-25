@@ -7,13 +7,15 @@ import { repeatDayOptions, repeatTypeOptions } from "./data/options";
 import { Goal } from "../../interfaces";
 import { Select } from "../Select/Select";
 import { Input } from "../Input/Input";
+import { Button, ButtonType } from "../Button/Button";
 
 export interface GoalFormProps {
   onSubmit: (goal: Goal) => void;
   initialGoal?: Goal;
+  heading: string;
 }
 
-export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
+export const GoalForm = ({ onSubmit, initialGoal, heading }: GoalFormProps) => {
   const [goalData, setGoalData] = useState<Goal>({
     goalName: "",
     description: "",
@@ -49,9 +51,8 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
     setGoalData(updatedGoalData);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async () => {
     try {
-      e.preventDefault();
       onSubmit(goalData);
     } catch (error) {
       console.error("Error creating goal:", error);
@@ -59,45 +60,52 @@ export const GoalForm = ({ onSubmit, initialGoal }: GoalFormProps) => {
   };
 
   return (
-    <form className="goal-form" onSubmit={handleSubmit}>
-      <Input
-        type="text"
-        id="goalName"
-        name="goalName"
-        placeholder="Goal name"
-        value={goalData.goalName}
-        onChange={handleChange}
-      />
+    <section className="goal-form">
+      <h2 className="goal-form__heading">{heading}</h2>
+      <section className="goal-form__inputs">
+        <Input
+          label="Goal Name"
+          type="text"
+          id="goalName"
+          name="goalName"
+          placeholder="Goal name"
+          value={goalData.goalName}
+          onChange={handleChange}
+        />
 
-      <Input
-        type="text"
-        id="description"
-        name="description"
-        placeholder="Description"
-        value={goalData.description || ""}
-        onChange={handleChange}
-      />
+        <Input
+          label="Description"
+          type="text"
+          id="description"
+          name="description"
+          placeholder="Description"
+          value={goalData.description || ""}
+          onChange={handleChange}
+        />
 
-      <Select
-        id="repeatType"
-        name="repeatType"
-        label="Repeat Type"
-        value={goalData.repeatType || "none"}
-        selectOptions={repeatTypeOptions}
-        onChange={handleChange}
-      />
+        <Select
+          id="repeatType"
+          name="repeatType"
+          label="Repeat Type"
+          value={goalData.repeatType || "none"}
+          selectOptions={repeatTypeOptions}
+          onChange={handleChange}
+        />
 
-      <Select
-        id="repeatDay"
-        name="repeatDay"
-        label="Repeat Day"
-        value={goalData.repeatDay?.[0] || ""}
-        disabled={goalData.repeatType !== "weekly"}
-        selectOptions={repeatDayOptions}
-        onChange={handleChange}
-      />
+        <Select
+          id="repeatDay"
+          name="repeatDay"
+          label="Repeat Day (weekly only)"
+          value={goalData.repeatType !== "weekly" ? "" : goalData.repeatDay?.[0]}
+          disabled={goalData.repeatType !== "weekly"}
+          selectOptions={repeatDayOptions}
+          onChange={handleChange}
+        />
+      </section>
 
-      <button type="submit">{initialGoal ? "Update Goal" : "Create Goal"}</button>
-    </form>
+      <Button type={ButtonType.default} onClick={handleSubmit}>
+        {initialGoal ? "Update Goal" : "Create Goal"}
+      </Button>
+    </section>
   );
 };
