@@ -8,16 +8,23 @@ import { useAuth } from "../../auth/AuthContext";
 import { Button, ButtonType } from "../Button/Button";
 
 const links = [
-  { title: "Home", url: "/" },
   { title: "Today", url: "/today" },
   { title: "Goals", url: "/goals" },
   { title: "Progress", url: "/progress" },
+];
+
+const notLoggedInLinks = [
+  { title: "Home", url: "/" },
+  { title: "Login", url: "/login" },
+  { title: "Signup", url: "/signup" },
 ];
 
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { logout } = useAuth();
+
+  const token = localStorage.getItem("token");
 
   const navigate = useNavigate();
 
@@ -45,19 +52,27 @@ export const Navbar = () => {
         exit={{ opacity: 0 }}
       >
         <ul className="links">
-          {links.map((link, index) => (
-            <li key={index}>
-              {
-                <Link to={link.url} className="links__link">
-                  {link.title}
-                </Link>
-              }
-            </li>
-          ))}
+          {token
+            ? links.map((link, index) => (
+                <li key={index}>
+                  <Link to={link.url} className="links__link">
+                    {link.title}
+                  </Link>
+                </li>
+              ))
+            : notLoggedInLinks.map((link, index) => (
+                <li key={index}>
+                  <Link to={link.url} className="links__link">
+                    {link.title}
+                  </Link>
+                </li>
+              ))}
         </ul>
-        <Button type={ButtonType.default} onClick={handleLogout}>
-          Logout
-        </Button>
+        {token && (
+          <Button type={ButtonType.default} onClick={handleLogout}>
+            Logout
+          </Button>
+        )}
       </motion.section>
     </nav>
   );
