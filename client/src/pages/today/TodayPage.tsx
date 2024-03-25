@@ -16,7 +16,11 @@ export const TodayPage = () => {
   const getTodayGoalsData = async () => {
     try {
       const response = await submitToApi({ method: "GET", link: "/today" });
-      if (response) {
+      
+      if (!response) {
+        setGoals([]);
+        setLoading(false);
+      } else {
         setGoals(response.body.goalsDueToday);
         setLoading(false);
       }

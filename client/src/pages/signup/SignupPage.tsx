@@ -4,11 +4,10 @@ import { useState } from "react";
 
 import { UserForm } from "../../components/userForm/UserForm";
 import { Layout, LayoutType } from "../../components/Layout/Layout";
-import { ApiSubmission } from "../../interfaces";
-import { postUserToApi } from "../../services/api";
 import { useNavigate } from "react-router-dom";
 import { notifySuccess, notifyError } from "../../utils/notifications";
 import { Button, ButtonType } from "../../components/Button/Button";
+import { submitToApi } from "../../services/api";
 
 export const SignupPage = () => {
   const [username, setUsername] = useState<string>("");
@@ -18,17 +17,13 @@ export const SignupPage = () => {
   const navigate = useNavigate();
 
   const handleSignup = async () => {
-    const apiSubmissionData: ApiSubmission = {
-      data: {
-        username,
-        password,
-        email,
-      },
-      method: "POST",
-      link: "/signup",
+    const data = {
+      username,
+      password,
+      email,
     };
 
-    const response = await postUserToApi(apiSubmissionData);
+    const response = await submitToApi({ data, method: "POST", link: "/signup" });
 
     if (response.success === true) {
       setUsername("");
@@ -38,7 +33,7 @@ export const SignupPage = () => {
       notifySuccess(response.message);
 
       setTimeout(() => {
-        navigate("/");
+        navigate("/login");
       }, 2000);
     } else {
       notifyError(response.message);

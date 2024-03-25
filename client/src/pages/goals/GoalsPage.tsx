@@ -2,7 +2,7 @@ import "./style.scss";
 
 import { useEffect, useState } from "react";
 
-import { submitBodyToApi, submitToApi } from "../../services/api";
+import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard, GoalCardType } from "../../components/GoalCard/GoalCard";
 import { Layout, LayoutType } from "../../components/Layout/Layout";
@@ -43,8 +43,8 @@ export const GoalsPage = () => {
   }
 
   const handleCreate = async (goal: Goal) => {
-    const result = await submitBodyToApi({ data: goal, method: "POST", link: "/goals" });
-    if (result.success === true) {
+    const result = await submitToApi({ data: goal, method: "POST", link: "/goals" });
+    if (result) {
       notifySuccess(result.message);
       setTimeout(() => {
         window.location.reload();

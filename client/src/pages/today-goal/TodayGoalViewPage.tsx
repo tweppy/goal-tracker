@@ -6,7 +6,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
 import { GoalCard, GoalCardType } from "../../components/GoalCard/GoalCard";
-import { getGoalData } from "../../utils/helpers";
 import { Layout, LayoutType } from "../../components/Layout/Layout";
 import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
 import { notifyError, notifySuccess } from "../../utils/notifications";
@@ -20,6 +19,20 @@ export const TodayGoalViewPage = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
+
+  useEffect(() => {
+    async function fetchData() {
+      const result = await submitToApi({ method: "GET", link: "/goals/" + id });
+      if (!result) {
+        navigate("/today");
+        notifyError("Goal not found");
+      } else {
+        setGoal(result.body.goal);
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [id, navigate]);
 
   const handleCompleteGoal = async () => {
     try {
@@ -35,23 +48,19 @@ export const TodayGoalViewPage = () => {
     }
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      const result = await getGoalData(id as string);
-      if (result) {
-        setGoal(result);
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [id]);
-
   const handleEdit = () => {
     navigate("/goals/" + id);
   };
 
-  const handleViewProgress = () => {
-    navigate("/progress/" + id);
+  const handleViewProgress = async () => {
+    const link = "/progress/" + id;
+    const result = await submitToApi({ method: "GET", link });
+
+    if (result == false) {
+      notifyError("No progress found for this goal");
+    } else {
+      navigate("/progress/" + id);
+    }
   };
 
   return goal && !loading ? (
