@@ -24,7 +24,9 @@ export const AppRoutes = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route element={<LoggedInWrapper />}>
+          <Route path="/" element={<HomePage />} />
+        </Route>
         <Route element={<LoggedInWrapper />}>
           <Route path="/signup" element={<SignupPage />} />
         </Route>
