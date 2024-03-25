@@ -5,11 +5,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
-import { GoalCard } from "../../components/GoalCard/GoalCard";
+import { GoalCard, GoalCardType } from "../../components/GoalCard/GoalCard";
 import { getGoalData } from "../../utils/helpers";
-import { Layout } from "../../components/Layout/Layout";
+import { Layout, LayoutType } from "../../components/Layout/Layout";
 import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
 import { notifyError, notifySuccess } from "../../utils/notifications";
+import { Button, ButtonType } from "../../components/Button/Button";
 
 export const TodayGoalViewPage = () => {
   const [goal, setGoal] = useState<Goal>();
@@ -45,15 +46,41 @@ export const TodayGoalViewPage = () => {
     fetchData();
   }, [id]);
 
+  const handleEdit = () => {
+    navigate("/goals/" + id);
+  };
+
+  const handleViewProgress = () => {
+    navigate("/progress/" + id);
+  };
+
   return goal && !loading ? (
-    <Layout>
+    <Layout type={LayoutType.fullScreenNav}>
       <main className="today-goal-page">
-        <section>
-          {goal && <GoalCard key={goal.goalId} {...goal} goalId={goal.goalId || ""} />}
+        <header className="today-goal-page__header">
+          <h1 className="header__title">{goal.goalName}</h1>
+        </header>
+        <section className="today-goal-page__goal">
+          {goal && (
+            <GoalCard
+              type={GoalCardType.goalView}
+              key={goal.goalId}
+              goalId={goal.goalId || ""}
+              {...goal}
+            />
+          )}
+          <section className="goal__buttons">
+            <Button type={ButtonType.default} disabled={completed} onClick={handleCompleteGoal}>
+              Mark as completed
+            </Button>
+            <Button type={ButtonType.default} onClick={handleEdit}>
+              Goal details
+            </Button>
+            <Button type={ButtonType.default} onClick={handleViewProgress}>
+              View progress
+            </Button>
+          </section>
         </section>
-        <button disabled={completed} onClick={handleCompleteGoal}>
-          mark as completed
-        </button>
       </main>
     </Layout>
   ) : (
