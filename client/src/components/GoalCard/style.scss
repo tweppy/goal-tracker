@@ -1,0 +1,64 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+@mixin base {
+  @include var.flexColumn;
+  justify-content: space-between;
+  background-color: color.$purple;
+  color: color.$white;
+  padding: var.$paddingMd;
+  border-radius: var.$radiusMd;
+  width: 100%;
+  cursor: pointer;
+
+  .goal-card__header {
+    .goal-card__title {
+      @include font.fontSizeLarge;
+      margin-bottom: 0;
+    }
+  }
+
+  .goal-card__description {
+    @include font.fontSizeNormalThin;
+    margin-top: var.$marginSm;
+  }
+}
+
+@mixin repeatDay {
+  .goal-card__repeatDay {
+    background-color: color.$darkPurple;
+    @include font.fontSizeNormal;
+    text-align: center;
+    padding: var.$paddingSm;
+    border-radius: var.$radiusMd;
+    width: fit-content;
+    max-width: 120px;
+    margin-top: var.$margin;
+  }
+}
+
+.goal-card {
+  &__full {
+    @include base;
+    @include repeatDay;
+    height: 140px;
+  }
+
+  &__small {
+    @include base;
+  }
+
+  &__goalView {
+    @include base;
+    @include repeatDay;
+    height: 200px;
+    padding: 0;
+
+    .goal-card__description {
+      @include font.fontSizeMedium;
+      font-weight: 500;
+      text-align: center;
+    }
+  }
+}

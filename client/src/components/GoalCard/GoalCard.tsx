@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import "./style.scss";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -9,6 +10,13 @@ interface GoalCardProps {
   description?: string;
   repeatType?: string;
   repeatDay?: number[] | string;
+  type: GoalCardType;
+}
+
+export enum GoalCardType {
+"full" = "full",
+"small" = "small",
+"goalView" = "goalView"
 }
 
 export const GoalCard = ({
@@ -17,6 +25,7 @@ export const GoalCard = ({
   description,
   repeatType,
   repeatDay,
+  type,
 }: GoalCardProps) => {
   const navigate = useNavigate();
 
@@ -38,14 +47,14 @@ export const GoalCard = ({
   };
 
   return (
-    <section className="goal-card" key={goalId} onClick={handleClick}>
-      <header className="goal-card__header">
-        <h2 className="goal-card__title">{goalName}</h2>
-      </header>
-      {description && <p className="goal-card__description">Desc: {description}</p>}
-      {repeatType && repeatType !== "none" && (
-        <p className="goal-card__repeatDay">Repeats: {goalRepeats()}</p>
+    <section className={`goal-card__${type}`} key={goalId} onClick={handleClick}>
+      {type !== "goalView" && (
+        <header className="goal-card__header">
+          <h2 className="goal-card__title">{goalName}</h2>
+        </header>
       )}
+      {description && <p className="goal-card__description">{description}</p>}
+      <article className="goal-card__repeatDay">{goalRepeats()}</article>
     </section>
   );
 };
