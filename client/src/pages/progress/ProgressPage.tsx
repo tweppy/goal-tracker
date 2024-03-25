@@ -16,7 +16,11 @@ export const ProgressPage = () => {
   const getUserGoalsProgress = async () => {
     try {
       const response = await submitToApi({ method: "GET", link: "/progress" });
-      if (response) {
+      
+      if (!response) {
+        setProgressGoals([]);
+        setLoading(false);
+      } else {
         setProgressGoals(response.body.progress);
         setLoading(false);
       }

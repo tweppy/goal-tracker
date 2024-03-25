@@ -5,9 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { GoalCard, GoalCardType } from "../../components/GoalCard/GoalCard";
 import { Goal } from "../../interfaces";
-import { getGoalData } from "../../utils/helpers";
 import { Layout, LayoutType } from "../../components/Layout/Layout";
-import { submitBodyToApi, submitToApi } from "../../services/api";
+import { submitToApi } from "../../services/api";
 import { GoalForm } from "../../components/GoalForm/GoalForm";
 import { notifyError, notifySuccess } from "../../utils/notifications";
 import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
@@ -24,18 +23,32 @@ export const GoalViewPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchData() {
-      const result = await getGoalData(id as string);
-      setGoal(result);
-      setLoading(false);
-    }
-    fetchData();
-  }, [id]);
+    const getGoal = async () => {
+      try {
+        const result = await submitToApi({ method: "GET", link: "/goals/" + id });
+
+        if (result) {
+          setGoal(result.body.goal);
+          setLoading(false);
+        } else {
+          notifyError("Goal not found");
+          setTimeout(() => {
+            navigate("/goals");
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("Error fetching goals:", error);
+        setLoading(false);
+      }
+    };
+
+    getGoal();
+  }, [id, navigate]);
 
   const handleDelete = async () => {
     const result = await submitToApi({ method: "DELETE", link: `/goals/${id}` });
 
-    if (result.success === true) {
+    if (result) {
       notifySuccess(result.message);
       setTimeout(() => {
         navigate("/goals");
@@ -46,9 +59,9 @@ export const GoalViewPage = () => {
   };
 
   const handleEdit = async (goal: Goal) => {
-    const result = await submitBodyToApi({ data: goal, method: "PUT", link: `/goals/${id}` });
+    const result = await submitToApi({ data: goal, method: "PUT", link: `/goals/${id}` });
 
-    if (result.success === true) {
+    if (result) {
       notifySuccess(result.message);
       setTimeout(() => {
         window.location.reload();
@@ -62,8 +75,15 @@ export const GoalViewPage = () => {
     setShowModal(true);
   };
 
-  const handleViewProgress = () => {
-    navigate("/progress/" + id);
+  const handleViewProgress = async () => {
+    const link = "/progress/" + id;
+    const result = await submitToApi({ method: "GET", link });
+
+    if (!result) {
+      notifyError("No progress found for this goal");
+    } else {
+      navigate("/progress/" + id);
+    }
   };
 
   return goal && !loading ? (
