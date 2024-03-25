@@ -63,10 +63,8 @@ export const calculateProgressForPreviousWeek = (
   completedOn: CompletedGoal[],
   repeatType: string,
 ): number => {
-  const startOfPreviousWeek = dayjs().subtract(1, "isoWeek").startOf("isoWeek").format("YYYY-MM-DD");
-  const endOfPreviousWeek = dayjs().subtract(1, "isoWeek").endOf("isoWeek").format("YYYY-MM-DD");
-
-  console.log('this is the end', endOfPreviousWeek);
+  const startOfPreviousWeek = dayjs().subtract(1, "week").startOf("isoWeek").format("YYYY-MM-DD");
+  const endOfPreviousWeek = dayjs().subtract(1, "week").endOf("isoWeek").format("YYYY-MM-DD");
 
   const progressDates = completedOn
     .filter(goal =>

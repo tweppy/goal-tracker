@@ -34,7 +34,6 @@ export const ProgressGoalViewPage = () => {
   const repeatType = progressGoal[0]?.repeatType;
   const progress = calculateProgress(progressGoal, repeatType);
   const lastWeekProgress = calculateProgressForPreviousWeek(progressGoal, repeatType);
-  console.log(lastWeekProgress)
 
   return progressGoal && !loading ? (
     <Layout
@@ -45,19 +44,18 @@ export const ProgressGoalViewPage = () => {
     >
       <main className="progress-goal-page">
         <section className="progress-goal-page__wrapper">
-          <section className="progress__this-week">
+          <section className="this-week">
             <h2 className="this-week__title">This week</h2>
             <ProgressCircle progress={progress} />
             <p className="this-week__description">This week, you've completed {progress}% so far</p>
           </section>
-
-          <section className="progress__last-week">
+          <section className="last-week">
             <h2 className="last-week__title">Last week</h2>
             <ProgressCircle progress={lastWeekProgress} />
-            <p className="last-week__description">Last week, you completed the goal {lastWeekProgress}%</p>
+            <p className="last-week__description">
+              Last week, you completed the goal {lastWeekProgress}%
+            </p>
           </section>
-
-          {/* <p className="empty">No progress found for this goal</p> */}
         </section>
       </main>
     </Layout>
