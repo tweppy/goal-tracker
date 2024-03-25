@@ -4,15 +4,18 @@ import { useEffect, useState } from "react";
 
 import { submitBodyToApi, submitToApi } from "../../services/api";
 import { Goal } from "../../interfaces";
-import { GoalCard } from "../../components/GoalCard/GoalCard";
-import { GoalForm } from "../../components/GoalForm/GoalForm";
-import { Layout } from "../../components/Layout/Layout";
-import { notifyError, notifySuccess } from "../../utils/notifications";
+import { GoalCard, GoalCardType } from "../../components/GoalCard/GoalCard";
+import { Layout, LayoutType } from "../../components/Layout/Layout";
 import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
+import { Button, ButtonType } from "../../components/Button/Button";
+import { Modal } from "../../components/Modal/Modal";
+import { GoalForm } from "../../components/GoalForm/GoalForm";
+import { notifyError, notifySuccess } from "../../utils/notifications";
 
 export const GoalsPage = () => {
   const [goals, setGoals] = useState<Goal[]>([]);
-    const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const getUserGoals = async () => {
     try {
@@ -29,6 +32,16 @@ export const GoalsPage = () => {
     getUserGoals();
   }, []);
 
+  const handleOpenModal = async () => {
+    setShowModal(true);
+  };
+
+  if (showModal) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+
   const handleCreate = async (goal: Goal) => {
     const result = await submitBodyToApi({ data: goal, method: "POST", link: "/goals" });
     if (result.success === true) {
@@ -37,30 +50,38 @@ export const GoalsPage = () => {
         window.location.reload();
       }, 2000);
     } else {
-      notifyError('Invalid goal form');
+      notifyError("Invalid goal form");
     }
   };
 
   return goals && !loading ? (
-    <Layout>
+    <Layout
+      type={!showModal ? LayoutType.default : LayoutType.fullScreen}
+      title="Goals"
+      description="All your goals"
+    >
       <main className="goals-page">
-        <header className="goals-page__header">
-          <h1 className="goals-page__title">Goals</h1>
-        </header>
+        <Button type={ButtonType.default} onClick={handleOpenModal}>
+          Create new goal
+        </Button>
         <section className="goals-page__goals">
           {goals.map(goal => (
             <GoalCard
+              type={GoalCardType.small}
               key={goal.goalId}
               goalId={goal.goalId || ""}
-              userId={goal.userId || ""}
-              {...goal}
+              goalName={goal.goalName}
             />
           ))}
 
           {goals.length === 0 && <p className="empty">No goals found</p>}
         </section>
 
-        <GoalForm onSubmit={handleCreate} />
+        {showModal && (
+          <Modal onClose={() => setShowModal(false)}>
+            <GoalForm heading="New Goal" onSubmit={handleCreate} />
+          </Modal>
+        )}
       </main>
     </Layout>
   ) : (
