@@ -9,6 +9,7 @@
   width: calc(100% - 17px);
   z-index: 100;
   background-color: inherit;
+  height: 84px;
 
   .navicon {
     @include var.flexColumn;
