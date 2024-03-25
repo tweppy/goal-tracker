@@ -1,4 +1,7 @@
+import "./style.scss";
+
 interface InputProps {
+  label: string;
   type: string;
   id: string;
   name: string;
@@ -8,10 +11,14 @@ interface InputProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export const Input = ({ type, id, name, placeholder, value, disabled, onChange }: InputProps) => {
+export const Input = ({ label, type, id, name, placeholder, value, disabled, onChange }: InputProps) => {
   return (
-    <fieldset>
+    <>
+      <label className="input-label" htmlFor={id}>
+        {label}
+      </label>
       <input
+        className="input-field"
         type={type}
         id={id}
         name={name}
@@ -20,6 +27,6 @@ export const Input = ({ type, id, name, placeholder, value, disabled, onChange }
         disabled={disabled}
         onChange={onChange}
       />
-    </fieldset>
+    </>
   );
 };

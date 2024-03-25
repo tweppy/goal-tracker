@@ -1,0 +1,28 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+.input-label {
+  @include font.fontSizeSmall;
+  letter-spacing: 2px;
+  font-weight: 500;
+  color: color.$darkGray;
+}
+
+.input-field {
+  @include font.fontSizeNormal;
+  color: color.$darkGray;
+  padding: var.$paddingSm;
+  border: 2px solid color.$lightGray;
+  border-radius: var.$radiusSm;
+  transition: border-color 0.3s ease;
+  margin-bottom: var.$margin;
+
+  &:focus {
+    outline: none;
+    border-color: color.$darkPurple;
+  }
+
+  //   &:disabled {
+  //   }
+}
