@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import { submitToApi } from "../../services/api";
 import { CompletedGoal } from "../../interfaces";
 import { ProgressCard } from "../../components/ProgressCard/ProgressCard";
-import { Layout } from "../../components/Layout/Layout";
+import { Layout, LayoutType } from "../../components/Layout/Layout";
 import { LoadingSpinner } from "../../components/LoadingSpinner/LoadingSpinner";
+import { getWeekDates } from "../../utils/progressHelpers";
 
 export const ProgressPage = () => {
   const [progressGoals, setProgressGoals] = useState<CompletedGoal[]>([]);
-   const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   const getUserGoalsProgress = async () => {
     try {
@@ -39,14 +40,11 @@ export const ProgressPage = () => {
   });
 
   return progressGoals && !loading ? (
-    <Layout>
+    <Layout type={LayoutType.default} title="Progress" description={getWeekDates()}>
       <main className="progress-page">
-        <header className="progress-page__header">
-          <h1 className="progress-page__title">Progress Goals</h1>
-        </header>
         <section className="progress-page__goals">
           {Object.entries(groupedProgressGoals).map(([goalId, goal]) => (
-            <ProgressCard key={goalId} {...goal[0]} completedOn={goal} showDetails={false} />
+            <ProgressCard key={goalId} {...goal[0]} completedOn={goal} />
           ))}
           {progressGoals.length === 0 && (
             <p className="empty">Complete a goal to see your progress</p>
