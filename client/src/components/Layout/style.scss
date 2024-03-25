@@ -4,22 +4,47 @@
 
 @mixin base {
   width: 100%;
+  height: 100%;
+  @include var.flexColumn;
+}
+
+@mixin gridContainer {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr;
+  min-height: 100vh;
 }
 
 @mixin content {
-  max-width: 500px;
-  border: 1px solid green;
+  height: 100%;
 }
 
 .layout {
-  &__default {
-    @include base;
-    background-color: color.$white;
-    padding-top: var.$paddingHuge;
+  .header {
+    padding-top: 84px;
+    padding-bottom: var.$marginHuge;
+    @include var.flexColumn;
+    @include var.flexCenter;
+    gap: var.$gapSm;
+    text-align: center;
 
+    &__title {
+      @include font.fontPageHeader;
+    }
+    
+    &__description {
+      padding: 0 var.$paddingLg;
+
+    }
+  }
+
+  &__default {
+    @include gridContainer;
+    background-color: color.$white;
+    
     .content {
       @include content;
-      padding: var.$paddingHuge var.$paddingXL 0 var.$paddingXL;
+      padding: 0 var.$paddingXL;
     }
   }
 
@@ -33,10 +58,10 @@
 
   &__fullScreenNav {
     @include base;
-    height: 100%;
     @include var.flexColumn;
-
+    height: 100%;
     background-color: color.$purple;
+
     .content {
       @include content;
       height: 100%;
