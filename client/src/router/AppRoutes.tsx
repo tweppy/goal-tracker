@@ -20,6 +20,10 @@ const LoggedInWrapper = () => {
   return token ? <Navigate to="/today" /> : <Outlet />;
 };
 
+const NotFoundPage = () => {
+  return <div>404 Not Found</div>;
+};
+
 export const AppRoutes = () => {
   return (
     <BrowserRouter>
@@ -57,6 +61,7 @@ export const AppRoutes = () => {
         <Route element={<PrivateWrapper />}>
           <Route path="/progress/:id" element={<ProgressGoalViewPage />} />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
