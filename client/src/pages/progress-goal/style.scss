@@ -1,0 +1,35 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+@mixin progressDataBase {
+  @include var.flexColumn;
+  @include var.flexCenter;
+  padding: var.$padding;
+
+  &__title {
+    @include font.fontSizeLarge;
+    padding: var.$padding 0;
+  }
+
+  &__description {
+    padding: var.$padding;
+  }
+}
+
+.progress-goal-page {
+  &__wrapper {
+    @include var.flexColumn;
+    @include var.flexCenter;
+    gap: var.$gapSm;
+    padding: var.$padding;
+  }
+
+  .this-week {
+    @include progressDataBase;
+  }
+
+  .last-week {
+    @include progressDataBase;
+  }
+}

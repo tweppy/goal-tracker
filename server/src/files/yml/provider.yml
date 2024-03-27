@@ -1,0 +1,8 @@
+name: aws
+runtime: nodejs18.x
+region: eu-north-1
+profile: ${env:PROFILE}
+iam:
+  role: ${env:LAMBDA_ROLE}
+httpApi:
+  cors: true

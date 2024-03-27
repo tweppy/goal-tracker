@@ -1,0 +1,12 @@
+userSignup:
+  handler: "./src/functions/userSignup/index.handler"
+  events:
+    - httpApi:
+        path: /api/signup
+        method: POST
+userLogin:
+  handler: "./src/functions/userLogin/index.handler"
+  events:
+    - httpApi:
+        path: /api/login
+        method: POST

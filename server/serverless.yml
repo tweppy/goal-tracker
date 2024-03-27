@@ -1,0 +1,23 @@
+service: aws-goal-tracker-00
+frameworkVersion: '3'
+
+provider: ${file(src/files/yml/provider.yml)}
+
+useDotenv: true
+
+package:
+  individually: true
+
+plugins:
+  - serverless-esbuild
+
+custom: ${file(src/files/yml/esbuild.yml)}
+
+functions:
+  - ${file(src/files/yml/goalFunctions.yml)}
+  - ${file(src/files/yml/progressFunctions.yml)}
+  - ${file(src/files/yml/todayFunctions.yml)}
+  - ${file(src/files/yml/userFunctions.yml)}
+
+resources:
+  - ${file(src/files/yml/resources.yml)}

@@ -1,0 +1,70 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+@mixin dayBase {
+  @include font.fontSizeSmall;
+  border: 2px solid color.$darkPurple;
+  text-align: center;
+  padding: var.$paddingNano 0;
+  border-radius: var.$radiusMd;
+  width: 100%;
+  max-width: 120px;
+  margin-top: var.$margin;
+}
+
+.progress-card {
+  @include var.flexColumn;
+  gap: var.$gapMd;
+  background-color: color.$purple;
+  color: color.$white;
+  padding: var.$paddingMd;
+  border-radius: var.$radiusMd;
+  width: 100%;
+  cursor: pointer;
+
+  .progress-card__header {
+    @include var.flexRow;
+    justify-content: space-between;
+
+    .progress-card__title {
+      @include font.fontSizeXL;
+      margin-bottom: var.$marginSm;
+    }
+
+    .progress-card__repeatType {
+      @include font.fontSizeNormal;
+    }
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 25px;
+    background-color: color.$white;
+    border-radius: var.$radiusXL;
+    overflow: hidden;
+
+    &__fill {
+      height: 100%;
+      background-color: color.$darkPurple;
+      transition: width 0.3s ease-in-out;
+    }
+  }
+
+  .progress-card__completed-on {
+    @include var.flexRow;
+    gap: var.$gapNano;
+
+    .completed-on__day {
+      @include dayBase;
+      color: color.$darkPurple;
+      opacity: 0.5;
+    }
+
+    .done {
+      background-color: color.$darkPurple;
+      color: color.$white;
+      opacity: 1;
+    }
+  }
+}

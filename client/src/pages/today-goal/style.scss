@@ -1,0 +1,36 @@
+@use "../../styles/typography" as font;
+@use "../../styles/colors" as color;
+@use "../../styles/variables" as var;
+
+@mixin base {
+  @include var.flexColumn;
+  gap: var.$gapSm;
+}
+
+.today-goal-page {
+  height: 100%;
+  @include var.flexColumn;
+  justify-content: flex-end;
+
+  &__header {
+    text-align: center;
+    color: color.$white;
+
+    .header__title {
+      @include font.fontPageHeader;
+    }
+  }
+
+  &__goal {
+    @include base;
+    justify-content: space-between;
+    padding: var.$padding;
+    height: 70%;
+
+    .goal__buttons {
+      @include base;
+      width: 100%;
+      padding-bottom: var.$padding;
+    }
+  }
+}

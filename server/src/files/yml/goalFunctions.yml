@@ -1,0 +1,31 @@
+getGoals:
+  handler: "./src/functions/getGoals/index.handler"
+  events:
+    - httpApi:
+        path: /api/goals
+        method: GET
+getGoal:
+  handler: "./src/functions/getGoal/index.handler"
+  events:
+    - httpApi:
+        path: /api/goals/{goalId}
+        method: GET
+createGoal:
+  handler: "./src/functions/createGoal/index.handler"
+  events:
+    - httpApi:
+        path: /api/goals
+        method: POST
+editGoal:
+  handler: "./src/functions/editGoal/index.handler"
+  events:
+    - httpApi:
+        path: /api/goals/{goalId}
+        method: PUT
+removeGoal:
+  handler: "./src/functions/removeGoal/index.handler"
+  events:
+    - httpApi:
+        path: /api/goals/{goalId}
+        method: DELETE
+

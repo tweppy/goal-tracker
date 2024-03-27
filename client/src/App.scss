@@ -1,0 +1,18 @@
+@use "./styles/variables";
+@use "./styles/typography";
+@use "./styles/colors";
+
+* {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+.App {
+  box-sizing: border-box;
+  overflow: auto;
+  height: 100vh;
+  color: colors.$darkGray;
+  letter-spacing: 1px;
+  font-family: typography.$baseFontFamily;
+}
